@@ -19,7 +19,7 @@
 - [x] Turn the backend error format into an `ApiError` with `status`, `error`, `message`, `fields`.
 - [x] On 401 in the admin area → redirect to `/login?expired=1` (shows "Your session expired…").
 - [x] Hand-written types in `api/types.ts` matching the backend DTOs.
-- [ ] M1 check: a placeholder page calls `/api/public/ping` and shows the result. *(Page at `/` is done; waiting for the backend — B1.)*
+- [x] M1 check: a placeholder page calls `/api/public/ping` and shows the result. Verified 2026-10-12 in headless Chromium through the Vite proxy.
 
 ## F3 — Login and route guard (M2)
 - [ ] `useMe()` query on `/api/auth/me`.

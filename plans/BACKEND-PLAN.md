@@ -22,7 +22,7 @@
   - Session cookie: `HttpOnly`, `Secure` (prod), `SameSite=Lax`, 7-day timeout.
   - CSRF via `CookieCsrfTokenRepository.withHttpOnlyFalse()` + SPA handler (see ROADMAP gap 6).
   - `/api/admin/**` authenticated, `/api/public/**` and `/api/auth/login` open, static frontend files open.
-  - Return 401 JSON (not a redirect or login page) for unauthenticated API calls.
+  - Return 401 JSON (not a redirect or login page) for unauthenticated API calls. *(B1's minimal config returns 403 for now.)*
 - [ ] `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`.
 - [ ] Login rate limit: in-memory counter by IP and by email; 5 failures → blocked for 15 minutes → `429` with a clear error code the frontend can show.
 - [ ] Tests: login ok/bad, `/me` before and after, admin endpoint without login → 401, rate limit kicks in, CSRF required on POST.

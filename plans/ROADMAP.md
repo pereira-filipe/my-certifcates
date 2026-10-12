@@ -23,8 +23,8 @@ my-certifcates/
 
 | # | Milestone | Backend | Frontend | Done when |
 |---|---|---|---|---|
-| M0 | Repo foundation | — | — | Folder layout, `.gitignore`, README, CI running |
-| M1 | Skeletons talk to each other | B1 | F1, F2 | `npm run dev` page shows data from Spring Boot through the Vite proxy |
+| M0 ✅ | Repo foundation | — | — | Folder layout, `.gitignore`, README, CI running |
+| M1 ✅ | Skeletons talk to each other | B1 | F1, F2 | `npm run dev` page shows data from Spring Boot through the Vite proxy |
 | M2 | Login works | B2 | F3 | I can log in, reload and stay logged in, and log out; `/admin` redirects when logged out |
 | M3 | Manage certificates (no files) | B3 | F4, F5 (without files) | Add, edit, delete, tag, reorder and hide/show certificates |
 | M4 | Files | B4 | F5 (files) | Upload PDF/image, see thumbnail and preview, download, delete |
@@ -38,7 +38,7 @@ my-certifcates/
 - [x] `docker-compose.yml` with PostgreSQL 16 (dev only), plus `.env.example` listing every env var.
 - [x] GitHub Actions CI: backend `./mvnw verify` (Testcontainers works on GitHub runners) and frontend `npm ci && npm run lint && npm test && npm run build`.
 - [x] Dependabot for GitHub Actions ([BACKEND.md §8](../specs/BACKEND.md)). Maven and npm entries are added in B1 and F1, once those projects exist.
-- [ ] Install the local prerequisites before M1: Java 21, Node.js 22, Docker with Compose.
+- [x] Install the local prerequisites before M1: Java 21, Node.js 22, Docker with Compose.
 
 ## Gaps found in the specs
 
