@@ -1,8 +1,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { FileText, GripVertical, Pencil, Trash2 } from 'lucide-react'
+import { GripVertical, Pencil, Trash2 } from 'lucide-react'
 import { Link } from 'react-router'
 import type { Certificate } from '@/api/types'
+import { FileThumbnail } from '@/components/CertificateFiles'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -58,10 +59,8 @@ export function CertificateRow({
         </button>
       )}
 
-      {/* Thumbnail of the main file comes with file uploads (M4). */}
-      <div className="flex size-14 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-        <FileText className="size-6" aria-hidden />
-      </div>
+      {/* The main file comes first; its thumbnail is what visitors see on the card. */}
+      <FileThumbnail file={certificate.files[0]} className="size-14" />
 
       <div className="min-w-0 flex-1">
         <Link to={`/admin/certificates/${id}`} className="font-medium hover:underline">

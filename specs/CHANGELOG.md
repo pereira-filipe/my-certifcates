@@ -6,6 +6,7 @@ Each entry: date, which spec file changed, and what/why. Full diffs are in git:
 `git log --follow -p specs/<file>`
 
 ## 2026-10-12
+- `BACKEND.md` §3–4: details settled while building file uploads (B4): at most 10 files per certificate, `413 FILE_TOO_LARGE` over 10 MB, `?download=true` for attachments (inline by default), thumbnails max 640 px wide and skipped for images over 50 megapixels, private 1-day caching, bytes deleted only after commit.
 - `BACKEND.md` §2–3: details settled while building certificate management (B3): tag names ≤ 50 chars and unique ignoring case, at most 20 tags per certificate, notes ≤ 10,000 chars, `verification_url` must be http(s); tag endpoints spelled out, including `PUT /api/admin/tags/{id}` to rename (Settings needs it).
 - `BACKEND.md` §5: details settled while building login (B2): bootstrap rules (prod refuses to start without owner vars, dev warns; display name from the email), session cookie lasts 7 days, sessions are in memory (restart logs out), CSRF via `csrf.spa()`, error codes for the auth endpoints, `/api/auth/me` requires login.
 - `BACKEND.md` §1: Spring Boot 3 → **Spring Boot 4** (4.1 is the current release; 3.x is out of open-source support and no longer offered by Spring Initializr). Found while setting up the backend (B1).

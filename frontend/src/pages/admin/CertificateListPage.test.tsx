@@ -14,6 +14,7 @@ function certificate(overrides: Partial<Certificate>): Certificate {
     isPublic: false,
     displayOrder: 0,
     tags: [],
+    files: [],
     createdAt: '2025-03-10T00:00:00Z',
     updatedAt: '2025-03-10T00:00:00Z',
     ...overrides,

@@ -25,7 +25,7 @@ function readCookie(name: string): string | undefined {
   return match ? decodeURIComponent(match.slice(prefix.length)) : undefined
 }
 
-function isApiErrorBody(value: unknown): value is ApiErrorBody {
+export function isApiErrorBody(value: unknown): value is ApiErrorBody {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -38,7 +38,7 @@ function isApiErrorBody(value: unknown): value is ApiErrorBody {
  * Spring Security hands out the XSRF-TOKEN cookie on any response. If the first call of a visit is a
  * POST (e.g. the login form), fetch something cheap first so the cookie exists.
  */
-async function ensureCsrfCookie(): Promise<string | undefined> {
+export async function ensureCsrfCookie(): Promise<string | undefined> {
   const existing = readCookie(CSRF_COOKIE)
   if (existing) return existing
   await fetch('/api/auth/me', { credentials: 'include' }).catch(() => undefined)
@@ -46,7 +46,7 @@ async function ensureCsrfCookie(): Promise<string | undefined> {
 }
 
 /** In the admin area a 401 means the session expired: go to the login page and come back after. */
-function redirectToLoginIfAdmin() {
+export function redirectToLoginIfAdmin() {
   const { pathname, search } = window.location
   if (!pathname.startsWith('/admin')) return
   const next = encodeURIComponent(pathname + search)

@@ -32,8 +32,21 @@ export type Certificate = {
   isPublic: boolean
   displayOrder: number
   tags: string[]
+  /** Main file first. */
+  files: CertificateFile[]
   createdAt: string
   updatedAt: string
+}
+
+/** A file attached to a certificate. Served at /api/admin/files/{id}. */
+export type CertificateFile = {
+  id: string
+  originalName: string
+  contentType: string
+  sizeBytes: number
+  isPrimary: boolean
+  hasThumbnail: boolean
+  createdAt: string
 }
 
 /** Body of POST / PUT /api/admin/certificates. Tags are names; new names are created. */

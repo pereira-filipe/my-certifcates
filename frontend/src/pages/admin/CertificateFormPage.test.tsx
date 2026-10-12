@@ -18,6 +18,7 @@ const SAVED = {
   isPublic: false,
   displayOrder: 0,
   tags: ['Cloud'],
+  files: [],
   createdAt: '',
   updatedAt: '',
 }

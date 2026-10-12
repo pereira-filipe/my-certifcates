@@ -7,7 +7,8 @@ import { z } from 'zod'
 import { useCertificate, useCreateCertificate, useUpdateCertificate } from '@/api/certificates'
 import { ApiError } from '@/api/client'
 import { useTags } from '@/api/tags'
-import type { Certificate, CertificateInput } from '@/api/types'
+import type { Certificate, CertificateFile, CertificateInput } from '@/api/types'
+import { CertificateFilesSection, QueuedFilesSection } from '@/components/CertificateFiles'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { TagPicker } from '@/components/TagPicker'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { t } from '@/i18n'
+import { uploadAll, type UploadState } from '@/lib/uploads'
 
 // Same limits as the backend (specs/BACKEND.md §2), checked here first for instant feedback.
 const schema = z
@@ -89,7 +91,7 @@ export function CertificateFormPage() {
   const { id } = useParams()
   const certificate = useCertificate(id)
 
-  if (!id) return <CertificateForm initialValues={EMPTY} />
+  if (!id) return <CertificateForm key="new" initialValues={EMPTY} />
 
   if (certificate.isPending) {
     return (
@@ -113,47 +115,78 @@ export function CertificateFormPage() {
   }
 
   // Keyed by id so the form starts fresh when switching certificates.
-  return <CertificateForm key={id} id={id} initialValues={toFormValues(certificate.data)} />
+  return (
+    <CertificateForm
+      key={id}
+      id={id}
+      initialValues={toFormValues(certificate.data)}
+      files={certificate.data.files}
+    />
+  )
 }
 
-function CertificateForm({ id, initialValues }: { id?: string; initialValues: FormValues }) {
+function CertificateForm({
+  id,
+  initialValues,
+  files = [],
+}: {
+  id?: string
+  initialValues: FormValues
+  files?: CertificateFile[]
+}) {
   const navigate = useNavigate()
   const tags = useTags()
   const create = useCreateCertificate()
   const update = useUpdateCertificate(id ?? '')
-  const saving = create.isPending || update.isPending
-  const [saved, setSaved] = useState(false)
+  // Where to go once saved (and, for a new certificate, once its files are uploaded).
+  const [leaveTo, setLeaveTo] = useState<string | null>(null)
+  // A new certificate's files wait here until it has an id.
+  const [queued, setQueued] = useState<File[]>([])
+  const [uploads, setUploads] = useState<UploadState[]>([])
+  const uploading = uploads.some((u) => !u.error)
+  const saving = create.isPending || update.isPending || uploading
 
   const form = useForm<FormValues, unknown, z.output<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   })
-  const { errors, isDirty } = form.formState
+  const { errors } = form.formState
+  const hasChanges = form.formState.isDirty || queued.length > 0
 
   // Ask before leaving with unsaved changes: in-app navigation…
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
-      isDirty && !saved && currentLocation.pathname !== nextLocation.pathname,
+      hasChanges && !leaveTo && currentLocation.pathname !== nextLocation.pathname,
   )
   // …and closing or reloading the tab.
   useEffect(() => {
-    if (!isDirty || saved) return
+    if (!hasChanges || leaveTo) return
     const onBeforeUnload = (event: BeforeUnloadEvent) => event.preventDefault()
     window.addEventListener('beforeunload', onBeforeUnload)
     return () => window.removeEventListener('beforeunload', onBeforeUnload)
-  }, [isDirty, saved])
+  }, [hasChanges, leaveTo])
 
   // Leave after a successful save, once the blocker above knows the changes are saved.
   useEffect(() => {
-    if (saved) navigate('/admin')
-  }, [saved, navigate])
+    if (leaveTo) navigate(leaveTo)
+  }, [leaveTo, navigate])
 
   const onSubmit = form.handleSubmit((values) => {
     const mutation = id ? update : create
     mutation.mutate(toInput(values), {
-      onSuccess: () => {
+      onSuccess: async (saved) => {
+        if (!id && queued.length > 0) {
+          const failed = await uploadAll(saved.id, queued, setUploads, true)
+          setQueued([])
+          if (failed > 0) {
+            // Keep what worked; the edit page shows the certificate so the rest can be added again.
+            toast.error(t('files.savedButUploadFailed'))
+            setLeaveTo(`/admin/certificates/${saved.id}`)
+            return
+          }
+        }
         toast.success(t('form.saved'))
-        setSaved(true)
+        setLeaveTo('/admin')
       },
       onError: (error) => {
         // Show the backend's field errors under the matching fields.
@@ -241,6 +274,19 @@ function CertificateForm({ id, initialValues }: { id?: string; initialValues: Fo
           />
         </Field>
 
+        <Field name="files" label={t('files.title')} hint={t('files.hint')} group>
+          {id ? (
+            <CertificateFilesSection certificateId={id} files={files} />
+          ) : (
+            <QueuedFilesSection
+              files={queued}
+              onChange={setQueued}
+              uploads={uploads}
+              disabled={saving}
+            />
+          )}
+        </Field>
+
         <Field
           name="notes"
           label={t('form.notes')}
@@ -296,7 +342,7 @@ function CertificateForm({ id, initialValues }: { id?: string; initialValues: Fo
 }
 
 type FieldProps = {
-  name: FieldName
+  name: FieldName | 'files'
   label: string
   required?: boolean
   hint?: string

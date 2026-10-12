@@ -90,8 +90,8 @@ REST + JSON, base path `/api`. Errors use one format:
 | DELETE | `/api/admin/certificates/{id}` | delete certificate and its files |
 | PATCH | `/api/admin/certificates/{id}/visibility` | `{ "isPublic": true }` |
 | PUT | `/api/admin/certificates/order` | `[id1, id2, …]` → reorder |
-| POST | `/api/admin/certificates/{id}/files` | multipart upload (`file`, `primary=true/false`) |
-| GET | `/api/admin/files/{fileId}` | download/view any file |
+| POST | `/api/admin/certificates/{id}/files` | multipart upload (`file`, `primary=true/false`) → 201 with the file; 400 wrong type / empty / more than 10 files; 413 over 10 MB |
+| GET | `/api/admin/files/{fileId}` | view any file inline; `?download=true` makes it an attachment |
 | GET | `/api/admin/files/{fileId}/thumbnail` | thumbnail of any file (public or hidden certificate) |
 | PATCH | `/api/admin/files/{fileId}/primary` | make this file the main one |
 | DELETE | `/api/admin/files/{fileId}` | delete a file |
@@ -137,8 +137,11 @@ public interface StorageService {
 
 Rules:
 - **Allowed types:** PDF, PNG, JPEG, WEBP. Checked by the file's real content (magic bytes), not just the extension.
-- **Max size:** 10 MB per file (`spring.servlet.multipart.max-file-size`).
-- **Thumbnails:** generated on upload. Page 1 of a PDF is rendered with PDFBox, and images are scaled down. Thumbnails are stored as PNG under the same key prefix.
+- **Max size:** 10 MB per file (`spring.servlet.multipart.max-file-size`); bigger uploads get `413 FILE_TOO_LARGE`.
+- **Max files:** 10 per certificate.
+- **Thumbnails:** generated on upload. Page 1 of a PDF is rendered with PDFBox, and images are scaled down (WEBP is read with the TwelveMonkeys plugin). At most 640 px wide, stored as PNG under the same key prefix. Images over 50 megapixels get no thumbnail (protects memory). If a thumbnail can't be made, the upload still succeeds without one.
+- **Caching:** file and thumbnail responses are `Cache-Control: private, max-age=86400` (a file never changes under the same id).
+- **Consistency:** stored bytes are deleted only after the database change commits, and freshly written bytes are deleted if it rolls back. Empty folders are removed.
 - **Files are never publicly reachable directly.** The backend streams them after checking access (owner, or a public certificate behind a valid token). With S3, the backend may instead redirect to a short-lived pre-signed URL (≈5 minutes).
 - File names on disk/S3 are generated IDs; the original name is only stored in the DB and sent in `Content-Disposition`.
 
