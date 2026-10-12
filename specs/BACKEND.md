@@ -164,7 +164,7 @@ Rules:
 ## 7. Hosting
 
 - **Development:** run locally. PostgreSQL via `docker compose`, and the app with `./mvnw spring-boot:run`.
-- **Production:** a cheap PaaS (Railway, Render or Fly.io; to be picked) running the Docker image, with the provider's managed PostgreSQL.
+- **Production:** **Fly.io** runs the Docker image (one always-on machine, 1 GB, region `gru`) with a 1 GB volume for uploads; the database is **Neon** (free tier, AWS `sa-east-1`). Steps in [DEPLOY.md](../DEPLOY.md). The app's health check doesn't touch the database and idle connections close, so Neon can sleep (free compute hours).
 - ⚠️ **Disk on PaaS is usually wiped on every deploy/restart.** While storage is still local (phase 1), production needs a **persistent volume** mounted at `APP_STORAGE_LOCAL_DIR` (Railway volumes, Fly volumes, or a Render persistent disk). The alternative is to switch to S3 before the first production deploy.
 - HTTPS is provided by the PaaS.
 - **Frontend served by the backend:** the React build is copied into the Spring Boot app's static resources in the same Docker image, so frontend and API share one domain (no CORS or cross-site cookie issues). Non-`/api` paths that aren't files return `index.html` (SPA fallback). See [FRONTEND.md §7](FRONTEND.md).
@@ -187,7 +187,7 @@ Rules:
 
 - **Private data never leaves via public endpoints:** this is enforced by separate DTOs and covered by tests (see §10).
 - **Share link:** 32-character random token (`SecureRandom`). It can be regenerated if the link leaks.
-- **Backups:** daily automatic DB backups from the PaaS provider. In phase 1 the uploads volume is backed up manually or with a script, and in phase 2 S3 versioning is turned on.
+- **Backups:** the database is dumped daily by a GitHub Action, **encrypted** (the repository is public) and kept 30 days; Neon's free tier only keeps 6 hours of history. The uploads volume has Fly's daily snapshots, kept 14 days. In phase 2, S3 versioning.
 - **Logging:** no passwords, tokens or file contents in logs.
 - Dependencies kept up to date (Dependabot or similar).
 

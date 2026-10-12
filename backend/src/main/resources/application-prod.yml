@@ -10,6 +10,13 @@ server:
         secure: true
 
 spring:
+  datasource:
+    hikari:
+      # Neon's free tier sleeps after 5 idle minutes; idle connections would keep it awake and use up
+      # the free compute hours. Close them when unused (the first request after a pause wakes it up).
+      minimum-idle: 0
+      idle-timeout: 60000
+      maximum-pool-size: 5
   web:
     resources:
       cache:
@@ -22,3 +29,9 @@ spring:
 logging:
   level:
     root: INFO
+
+management:
+  health:
+    # Fly's health check runs every few seconds; it must not touch the database (see datasource above).
+    db:
+      enabled: false

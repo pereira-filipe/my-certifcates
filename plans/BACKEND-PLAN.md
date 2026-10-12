@@ -72,9 +72,13 @@
 - [x] Production profile: Swagger off, secure cookies, forwarded headers on (PaaS proxy), actuator only `health`, gzip, long cache for hashed assets.
 - [x] Security headers: Content-Security-Policy (no inline scripts), X-Frame-Options DENY, Referrer-Policy.
 - [x] `docker compose --profile app` runs the production image locally; smoke-tested in a browser (PDF viewer under CSP, PDF and WEBP thumbnails inside the jar, Secure cookie, link previews).
-- [ ] Pick the PaaS (Railway / Render / Fly.io), create managed Postgres and a **persistent volume** at `APP_STORAGE_LOCAL_DIR`.
+- [x] Pick the hosting: Fly.io (app + volume) and Neon (database). Config: `fly.toml`, `.env.production.example`, guide in `DEPLOY.md`.
+- [x] Image runs on a root-owned volume (entrypoint fixes ownership, then drops to the `app` user); health check doesn't wake the database.
+- [ ] Create the Neon project and the Fly app + volume (needs your accounts).
 - [ ] Set env vars, deploy, check HTTPS, log in, change the bootstrap password.
-- [ ] Turn on daily DB backups; write a small script to back up the uploads volume ([BACKEND.md §8](../specs/BACKEND.md)).
+- [x] Daily DB backup workflow (encrypted dump, tested locally: dump → encrypt → decrypt → restore list); uploads via Fly volume snapshots (14 days).
+- [x] Deploy workflow: after CI passes on `main` (needs `FLY_API_TOKEN`).
+- [ ] Add the GitHub secrets `FLY_API_TOKEN`, `NEON_DATABASE_URL`, `BACKUP_PASSPHRASE`.
 - [ ] Check logs contain no passwords, tokens or file contents.
 
 ## B7 — Later

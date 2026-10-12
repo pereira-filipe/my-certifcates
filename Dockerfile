@@ -20,16 +20,17 @@ COPY --from=frontend /build/frontend/dist src/main/resources/static
 # Tests run in CI, not here.
 RUN ./mvnw -B -q package -DskipTests && cp target/my-certificates-*.jar /build/app.jar
 
-# 3. Runtime: Java only, non-root
+# 3. Runtime: Java only. Starts as root just to fix the uploads folder owner, then runs Java as "app".
 FROM eclipse-temurin:21-jre
-RUN useradd --system --uid 10001 --no-create-home app \
-    && mkdir -p /data/uploads && chown app /data/uploads
+RUN groupadd --system --gid 10001 app \
+    && useradd --system --uid 10001 --gid app --no-create-home app \
+    && mkdir -p /data/uploads && chown app:app /data/uploads
 WORKDIR /app
 COPY --from=backend /build/app.jar app.jar
-USER app
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 ENV SPRING_PROFILES_ACTIVE=prod \
     APP_STORAGE_LOCAL_DIR=/data/uploads \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
 EXPOSE 8080
 # Uploaded files live in /data/uploads: mount a persistent volume there (specs/BACKEND.md §7).
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

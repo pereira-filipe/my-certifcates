@@ -1,0 +1,42 @@
+name: Database backup
+
+# Daily, encrypted dump of the Neon database, kept 30 days as a workflow artifact.
+# Neon's free tier only keeps 6 hours of history, so this is the real backup (specs/BACKEND.md §8).
+# The repository is public: the dump is encrypted with BACKUP_PASSPHRASE before it is stored.
+# Needs the NEON_DATABASE_URL and BACKUP_PASSPHRASE secrets (DEPLOY.md); without them it only leaves a note.
+on:
+  schedule:
+    - cron: "17 6 * * *" # every day, 06:17 UTC (03:17 in São Paulo)
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - name: Check the secrets
+        id: secrets
+        run: |
+          if [ -n "$DATABASE_URL" ] && [ -n "$BACKUP_PASSPHRASE" ]; then echo "present=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::NEON_DATABASE_URL or BACKUP_PASSPHRASE is not set, so no backup was made (see DEPLOY.md)."; fi
+      - name: Dump and encrypt
+        if: steps.secrets.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          name="my-certificates-db-$(date -u +%F).dump"
+          # A newer pg_dump can dump older servers; the postgres image brings a recent one.
+          docker run --rm -e DATABASE_URL postgres:18 sh -c 'pg_dump "$DATABASE_URL" --format=custom --no-owner --no-privileges' > "$name"
+          test -s "$name"
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+              --passphrase "$BACKUP_PASSPHRASE" --output "$name.gpg" "$name"
+          rm "$name"
+          echo "BACKUP_FILE=$name.gpg" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        if: steps.secrets.outputs.present == 'true'
+        with:
+          name: ${{ env.BACKUP_FILE }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 30
+          if-no-files-found: error

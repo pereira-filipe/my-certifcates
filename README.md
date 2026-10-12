@@ -4,6 +4,7 @@ A website to store all my certificates in one place and share them as a clean pu
 
 - **What to build:** [specs/](specs/) — start with [OVERVIEW.md](specs/OVERVIEW.md). Changes are logged in [specs/CHANGELOG.md](specs/CHANGELOG.md).
 - **How to build it:** [plans/](plans/) — milestones in [ROADMAP.md](plans/ROADMAP.md).
+- **How to deploy it:** [DEPLOY.md](DEPLOY.md) — Fly.io + Neon.
 
 ## Stack
 

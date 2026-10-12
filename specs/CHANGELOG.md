@@ -6,6 +6,7 @@ Each entry: date, which spec file changed, and what/why. Full diffs are in git:
 `git log --follow -p specs/<file>`
 
 ## 2026-10-12
+- `BACKEND.md` §7–8: hosting decided — **Fly.io** for the app and uploads volume, **Neon** (free tier) for the database instead of a managed PaaS database (Fly's starts at about $38/month). Backups: daily encrypted DB dump via GitHub Actions (30 days) + Fly volume snapshots (14 days).
 - `BACKEND.md` §7–8 / `FRONTEND.md` §5–6: settled while packaging (M6): one Docker image (non-root, uploads in `/data/uploads`); Spring Boot serves the app and fills the link-preview tags (with `og:image` = first public thumbnail); security headers added (Content-Security-Policy without inline scripts, frame DENY, Referrer-Policy); dark mode uses the same button blue as light mode, since the lighter blue failed WCAG AA contrast.
 - `FRONTEND.md` §3: settled while building the public catalog (M5): `/` redirects to `/admin`; an unknown certificate under a valid link shows "not found" inside the dialog; the PDF viewer is lazy-loaded; card thumbnails are shown whole, not cropped.
 - `BACKEND.md` §3–4: details settled while building file uploads (B4): at most 10 files per certificate, `413 FILE_TOO_LARGE` over 10 MB, `?download=true` for attachments (inline by default), thumbnails max 640 px wide and skipped for images over 50 megapixels, private 1-day caching, bytes deleted only after commit.
