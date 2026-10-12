@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfException;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -30,6 +31,23 @@ import tools.jackson.databind.json.JsonMapper;
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * Only this site's own scripts may run; nothing may frame the site. Styles allow inline because the UI
+     * library positions popups with style attributes. pdf.js renders in a worker created from a blob URL.
+     */
+    static final String CONTENT_SECURITY_POLICY = String.join("; ",
+            "default-src 'self'",
+            "script-src 'self'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: blob:",
+            "font-src 'self' data:",
+            "connect-src 'self'",
+            "worker-src 'self' blob:",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "frame-ancestors 'none'");
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository,
             JsonMapper jsonMapper) throws Exception {
@@ -39,6 +57,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()
                         // Everything else: health check, Swagger UI (dev only) and, later, the frontend files.
                         .anyRequest().permitAll())
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(CONTENT_SECURITY_POLICY))
+                        .referrerPolicy(referrer -> referrer.policy(
+                                ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)))
                 .csrf(csrf -> csrf.spa())
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .requestCache(cache -> cache.requestCache(new NullRequestCache()))

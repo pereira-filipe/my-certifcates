@@ -41,7 +41,7 @@ class GlobalExceptionHandlerTest {
     }
 
     private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TestController())
-            .setControllerAdvice(new GlobalExceptionHandler())
+            .setControllerAdvice(new GlobalExceptionHandler(new dev.filipe.mycertificates.web.IndexHtml()))
             .build();
 
     @Test

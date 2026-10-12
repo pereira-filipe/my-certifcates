@@ -11,6 +11,7 @@ import dev.filipe.mycertificates.common.NotFoundException;
 import dev.filipe.mycertificates.file.CertificateFile;
 import dev.filipe.mycertificates.file.FileService;
 import dev.filipe.mycertificates.file.StoredFile;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CatalogService {
 
     public record CatalogLink(String shareToken, String url) {
+    }
+
+    /** Title, description and image for link previews (Open Graph tags). */
+    public record LinkPreview(String title, String description, String url, String imageUrl) {
+
+        public static final LinkPreview GENERIC =
+                new LinkPreview("Certifications", "A catalog of professional certifications.", null, null);
     }
 
     private final UserRepository users;
@@ -62,6 +70,27 @@ public class CatalogService {
         return thumbnail ? fileService.thumbnailOf(file) : fileService.contentOf(file);
     }
 
+    /** For the catalog page's link preview. Empty for an unknown token. */
+    @Transactional(readOnly = true)
+    public Optional<LinkPreview> preview(String shareToken) {
+        return users.findByShareToken(shareToken).map(owner -> {
+            var visible = certificates.findByOwnerAndIsPublicTrueOrderByDisplayOrderAscCreatedAtDesc(owner);
+            String base = baseUrl();
+            String url = base + "/c/" + shareToken;
+            // The first public certificate with a thumbnail illustrates the link.
+            String image = visible.stream()
+                    .flatMap(c -> PublicCertificate.of(c).files().stream().limit(1))
+                    .filter(PublicCertificate.PublicFile::hasThumbnail)
+                    .findFirst()
+                    .map(f -> base + "/api/public/catalogs/" + shareToken + "/files/" + f.id() + "/thumbnail")
+                    .orElse(null);
+            String description = visible.size() == 1
+                    ? "1 professional certification of " + owner.getDisplayName() + "."
+                    : visible.size() + " professional certifications of " + owner.getDisplayName() + ".";
+            return new LinkPreview(owner.getDisplayName() + " — Certifications", description, url, image);
+        });
+    }
+
     @Transactional(readOnly = true)
     public CatalogLink link() {
         return linkFor(currentOwner.get());
@@ -75,8 +104,11 @@ public class CatalogService {
     }
 
     private CatalogLink linkFor(User owner) {
-        String base = properties.baseUrl().replaceAll("/+$", "");
-        return new CatalogLink(owner.getShareToken(), base + "/c/" + owner.getShareToken());
+        return new CatalogLink(owner.getShareToken(), baseUrl() + "/c/" + owner.getShareToken());
+    }
+
+    private String baseUrl() {
+        return properties.baseUrl().replaceAll("/+$", "");
     }
 
     private User ownerOf(String shareToken) {

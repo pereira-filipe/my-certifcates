@@ -1,4 +1,5 @@
-# Development only: PostgreSQL for the backend. Production uses the PaaS's managed Postgres.
+# Development: PostgreSQL for the backend (`docker compose up -d`). Production uses the PaaS's managed Postgres.
+# `docker compose --profile app up -d --build` also runs the production image locally on http://localhost:8080.
 # Usage: cp .env.example .env && docker compose up -d
 services:
   postgres:
@@ -17,5 +18,24 @@ services:
       timeout: 5s
       retries: 10
 
+  app:
+    profiles: [app]
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mycertificates}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-mycertificates}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-mycertificates}
+      APP_OWNER_EMAIL: ${APP_OWNER_EMAIL:-}
+      APP_OWNER_PASSWORD: ${APP_OWNER_PASSWORD:-}
+      APP_BASE_URL: ${APP_LOCAL_BASE_URL:-http://localhost:8080}
+    volumes:
+      - uploads:/data/uploads
+
 volumes:
   postgres-data:
+  uploads:

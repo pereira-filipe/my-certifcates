@@ -1,11 +1,16 @@
 package dev.filipe.mycertificates.common;
 
+import dev.filipe.mycertificates.web.IndexHtml;
+import dev.filipe.mycertificates.web.SpaController;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -16,12 +21,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Turns every exception thrown by a controller into an {@link ApiError}. Never exposes stack traces. */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    private final IndexHtml indexHtml;
+
+    public GlobalExceptionHandler(IndexHtml indexHtml) {
+        this.indexHtml = indexHtml;
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
@@ -63,7 +75,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<ApiError> handleOther(Exception ex) {
+    ResponseEntity<?> handleOther(Exception ex, HttpServletRequest request) {
+        // An unknown page (not /api) opened in a browser gets the app, which shows its "Page not found".
+        if (ex instanceof NoResourceFoundException && isPageRequest(request) && indexHtml.get().isPresent()) {
+            return ResponseEntity.status(404).contentType(SpaController.HTML_UTF8)
+                    .cacheControl(CacheControl.noCache()).body(indexHtml.get().get());
+        }
         // Spring's own web exceptions (unknown route, wrong method, ResponseStatusException, ...)
         if (ex instanceof ErrorResponse errorResponse) {
             HttpStatusCode status = errorResponse.getStatusCode();
@@ -71,6 +88,12 @@ public class GlobalExceptionHandler {
         }
         log.error("Unexpected error", ex);
         return respond(new ApiError(500, "INTERNAL_ERROR", "Something went wrong"));
+    }
+
+    private static boolean isPageRequest(HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        return "GET".equals(request.getMethod()) && !request.getRequestURI().startsWith("/api/")
+                && accept != null && accept.contains(MediaType.TEXT_HTML_VALUE);
     }
 
     private static ResponseEntity<ApiError> respond(ApiError body) {

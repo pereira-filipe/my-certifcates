@@ -67,9 +67,11 @@
 - [x] **Required security tests** ([BACKEND.md §10](../specs/BACKEND.md)): hidden cert and its files → 404; wrong token → 404; responses never contain `notes` / `expirationDate` (assert on raw JSON); old token → 404 after regenerate.
 
 ## B6 — Packaging and deploy (M6)
-- [ ] Multi-stage `Dockerfile`: Node builds `frontend/dist` → Maven builds the jar with `dist` copied into `static/` → slim JRE 21 runtime, non-root user.
-- [ ] SPA fallback controller: non-`/api`, non-file paths → `index.html`; for `/c/{token}` inject the owner's name into title/OG tags (ROADMAP gap 3).
-- [ ] Production profile: Swagger off, secure cookies, forwarded headers on (PaaS proxy), actuator only `health`.
+- [x] Multi-stage `Dockerfile`: Node builds `frontend/dist` → Maven builds the jar with `dist` copied into `static/` → slim JRE 21 runtime, non-root user.
+- [x] SPA fallback controller: non-`/api`, non-file paths → `index.html`; for `/c/{token}` inject the owner's name into title/OG tags (ROADMAP gap 3).
+- [x] Production profile: Swagger off, secure cookies, forwarded headers on (PaaS proxy), actuator only `health`, gzip, long cache for hashed assets.
+- [x] Security headers: Content-Security-Policy (no inline scripts), X-Frame-Options DENY, Referrer-Policy.
+- [x] `docker compose --profile app` runs the production image locally; smoke-tested in a browser (PDF viewer under CSP, PDF and WEBP thumbnails inside the jar, Secure cookie, link previews).
 - [ ] Pick the PaaS (Railway / Render / Fly.io), create managed Postgres and a **persistent volume** at `APP_STORAGE_LOCAL_DIR`.
 - [ ] Set env vars, deploy, check HTTPS, log in, change the bootstrap password.
 - [ ] Turn on daily DB backups; write a small script to back up the uploads volume ([BACKEND.md §8](../specs/BACKEND.md)).
