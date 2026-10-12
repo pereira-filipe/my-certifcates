@@ -51,6 +51,10 @@ public class User extends BaseEntity {
         this.displayName = displayName;
     }
 
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
+    }
+
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }

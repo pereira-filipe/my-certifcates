@@ -58,13 +58,13 @@
 - [x] Tests: each allowed type, fake extension rejected, too big rejected, thumbnail created for PDF and image, delete removes from disk (use a temp dir).
 
 ## B5 — Public catalog (M5)
-- [ ] `catalog` package with **separate public DTOs** (no `notes`, `expirationDate`, `ownerId`, `isPublic`).
-- [ ] `GET /api/public/catalogs/{shareToken}` (display name + public certificates in order, with tags and thumbnail URL).
-- [ ] `GET .../certificates/{id}`, `.../files/{fileId}`, `.../files/{fileId}/thumbnail`.
-- [ ] One access-check method: token matches owner AND certificate is public AND file belongs to that certificate; any failure → 404.
-- [ ] Filter adding `X-Robots-Tag: noindex, nofollow` to all `/api/public/**` responses.
-- [ ] `GET /api/admin/catalog` (full link built from `APP_BASE_URL`) and `POST /api/admin/catalog/regenerate-link`.
-- [ ] **Required security tests** ([BACKEND.md §10](../specs/BACKEND.md)): hidden cert and its files → 404; wrong token → 404; responses never contain `notes` / `expirationDate` (assert on raw JSON); old token → 404 after regenerate.
+- [x] `catalog` package with **separate public DTOs** (no `notes`, `expirationDate`, `ownerId`, `isPublic`).
+- [x] `GET /api/public/catalogs/{shareToken}` (display name + public certificates in order, with tags and thumbnail URL).
+- [x] `GET .../certificates/{id}`, `.../files/{fileId}`, `.../files/{fileId}/thumbnail`.
+- [x] One access-check method: token matches owner AND certificate is public AND file belongs to that certificate; any failure → 404.
+- [x] Filter adding `X-Robots-Tag: noindex, nofollow` to all `/api/public/**` responses.
+- [x] `GET /api/admin/catalog` (full link built from `APP_BASE_URL`) and `POST /api/admin/catalog/regenerate-link`.
+- [x] **Required security tests** ([BACKEND.md §10](../specs/BACKEND.md)): hidden cert and its files → 404; wrong token → 404; responses never contain `notes` / `expirationDate` (assert on raw JSON); old token → 404 after regenerate.
 
 ## B6 — Packaging and deploy (M6)
 - [ ] Multi-stage `Dockerfile`: Node builds `frontend/dist` → Maven builds the jar with `dist` copied into `static/` → slim JRE 21 runtime, non-root user.

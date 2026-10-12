@@ -15,6 +15,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, UUID>,
 
     List<Certificate> findByOwner(User owner);
 
+    /** What visitors see: public certificates only, in the owner's order. */
+    List<Certificate> findByOwnerAndIsPublicTrueOrderByDisplayOrderAscCreatedAtDesc(User owner);
+
+    Optional<Certificate> findByIdAndOwnerAndIsPublicTrue(UUID id, User owner);
+
     @Query("select min(c.displayOrder) from Certificate c where c.owner = :owner")
     Optional<Integer> findMinDisplayOrder(User owner);
 }

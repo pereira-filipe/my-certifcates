@@ -109,13 +109,25 @@ public class FileService {
 
     @Transactional(readOnly = true)
     public StoredFile load(UUID fileId) {
-        CertificateFile file = findOwned(fileId);
-        return stored(file.getStorageKey(), file.getContentType(), file.getOriginalName());
+        return contentOf(findOwned(fileId));
     }
 
     @Transactional(readOnly = true)
     public StoredFile loadThumbnail(UUID fileId) {
-        CertificateFile file = findOwned(fileId);
+        return thumbnailOf(findOwned(fileId));
+    }
+
+    /** Without any access check: callers must check first (the public catalog does its own). */
+    @Transactional(readOnly = true)
+    public Optional<CertificateFile> findById(UUID fileId) {
+        return files.findById(fileId);
+    }
+
+    public StoredFile contentOf(CertificateFile file) {
+        return stored(file.getStorageKey(), file.getContentType(), file.getOriginalName());
+    }
+
+    public StoredFile thumbnailOf(CertificateFile file) {
         if (file.getThumbnailKey() == null) {
             throw new NotFoundException("No thumbnail");
         }
