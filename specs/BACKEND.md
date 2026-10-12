@@ -183,6 +183,8 @@ Rules:
 
 ## 8. Privacy, backup & security
 
+- **Security headers** on every response: `Content-Security-Policy` (only the site's own scripts — no inline scripts —, no framing, no plugins), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; HSTS over HTTPS.
+
 - **Private data never leaves via public endpoints:** this is enforced by separate DTOs and covered by tests (see §10).
 - **Share link:** 32-character random token (`SecureRandom`). It can be regenerated if the link leaks.
 - **Backups:** daily automatic DB backups from the PaaS provider. In phase 1 the uploads volume is backed up manually or with a script, and in phase 2 S3 versioning is turned on.

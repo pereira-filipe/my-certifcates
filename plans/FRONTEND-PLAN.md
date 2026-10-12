@@ -63,11 +63,12 @@
 - [x] Lazy-load the admin routes (React Router `lazy`) so the public catalog doesn't download the admin code — the single bundle is already over 500 kB after F3.
 
 ## F8 — Testing and polish (M6)
-- [ ] Component tests: form validation, dropzone type/size checks, `CertificateCard`.
-- [ ] Playwright E2E against the real backend (docker compose + Spring Boot + Vite), the four flows in [FRONTEND.md §9](../specs/FRONTEND.md):
+- [x] Component tests: form validation, dropzone type/size checks, `CertificateCard`.
+- [x] Playwright E2E against the real backend (docker compose + Spring Boot + Vite), the four flows in [FRONTEND.md §9](../specs/FRONTEND.md):
   1. Log in → add certificate with file → make public → appears in catalog.
   2. Hide it → disappears from catalog.
   3. Catalog shows no expiration date or notes.
   4. Regenerate link → old link shows "Not found".
-- [ ] Accessibility pass: keyboard-only walkthrough, focus visible, contrast check (e.g. axe in Playwright).
-- [ ] Production build served by Spring Boot (B6) and smoke-tested in the Docker image.
+- [x] Accessibility pass: axe (WCAG 2.1 AA) on every page in light and dark mode, keyboard-only login. Fixed: dark-mode button contrast, the "Expired" badge contrast.
+- [x] CI job `e2e`: builds the image, runs it with a fresh database, runs Playwright (including the new-link flow).
+- [x] Production build served by Spring Boot (B6) and smoke-tested in the Docker image.

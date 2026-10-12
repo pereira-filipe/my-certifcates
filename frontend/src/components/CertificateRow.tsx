@@ -73,7 +73,10 @@ export function CertificateRow({
           <div className="mt-1.5 flex flex-wrap gap-1">
             {expirationDate &&
               (isExpired(expirationDate) ? (
-                <Badge variant="destructive">{t('list.expired')}</Badge>
+                // Red text on the page background: readable in both themes (the tinted badge is not).
+                <Badge variant="outline" className="border-destructive text-destructive">
+                  {t('list.expired')}
+                </Badge>
               ) : (
                 <Badge variant="outline">
                   {t('list.expires')} {formatMonthYear(expirationDate)}

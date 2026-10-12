@@ -46,3 +46,16 @@ cd backend
 ```
 
 More commands in [frontend/README.md](frontend/README.md) and [backend/README.md](backend/README.md).
+
+**Production image, locally** (what gets deployed: one Docker image with frontend and backend):
+
+```bash
+docker compose --profile app up -d --build   # http://localhost:8080
+```
+
+**End-to-end tests** (Playwright, against that image; CI runs them on every push):
+
+```bash
+cd frontend
+E2E_OWNER_EMAIL=you@example.com E2E_OWNER_PASSWORD=… npm run e2e
+```
