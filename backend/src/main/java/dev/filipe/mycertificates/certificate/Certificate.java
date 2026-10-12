@@ -2,7 +2,9 @@ package dev.filipe.mycertificates.certificate;
 
 import dev.filipe.mycertificates.auth.User;
 import dev.filipe.mycertificates.common.BaseEntity;
+import dev.filipe.mycertificates.file.CertificateFile;
 import dev.filipe.mycertificates.tag.Tag;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,8 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -54,6 +60,11 @@ public class Certificate extends BaseEntity {
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new LinkedHashSet<>();
+
+    /** Added and removed through FileService; deleted together with the certificate. */
+    @OneToMany(mappedBy = "certificate", cascade = CascadeType.REMOVE)
+    @OrderBy("createdAt")
+    private List<CertificateFile> files = new ArrayList<>();
 
     protected Certificate() {
     }
@@ -128,5 +139,9 @@ public class Certificate extends BaseEntity {
 
     public Set<Tag> getTags() {
         return tags;
+    }
+
+    public List<CertificateFile> getFiles() {
+        return files;
     }
 }

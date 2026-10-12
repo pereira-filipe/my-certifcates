@@ -13,6 +13,10 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mycertificates}
     username: ${SPRING_DATASOURCE_USERNAME:mycertificates}
     password: ${SPRING_DATASOURCE_PASSWORD:mycertificates}
+  servlet:
+    multipart:
+      max-file-size: 10MB # specs/BACKEND.md §4
+      max-request-size: 11MB
   jpa:
     open-in-view: false
     hibernate:
@@ -24,6 +28,9 @@ spring:
         default_batch_fetch_size: 50 # load tags for a whole page of certificates in one query
 
 server:
+  tomcat:
+    # Read (and discard) a too-large upload so the client gets a clean 413 instead of a dropped connection.
+    max-swallow-size: 20MB
   servlet:
     session:
       timeout: 7d

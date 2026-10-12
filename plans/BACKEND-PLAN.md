@@ -42,20 +42,20 @@
 - [x] Tests for each endpoint, including validation errors and "other owner's ID → 404" behavior.
 
 ## B4 — Files and thumbnails (M4)
-- [ ] Migration `V4__certificate_files.sql`.
-- [ ] `StorageService` interface + `LocalStorageService` (root from `APP_STORAGE_LOCAL_DIR`, defaults to `./uploads`); keys only, never full paths; reject keys with `..`.
-- [ ] Bean selected by `APP_STORAGE_TYPE` (`local` now; `s3` in B7).
-- [ ] Upload `POST /api/admin/certificates/{id}/files`:
-  - [ ] Check real type by magic bytes (PDF `%PDF`, PNG, JPEG, WEBP `RIFF....WEBP`); reject everything else with 400.
-  - [ ] 10 MB limit (`spring.servlet.multipart.max-file-size` / `max-request-size`) → 413 in the standard error format.
-  - [ ] Save under `certificates/{certId}/{fileId}.{ext}`.
-  - [ ] Thumbnail: PDFBox renders page 1; images are scaled down; save PNG as `certificates/{certId}/{fileId}-thumb.png`. A thumbnail failure doesn't fail the upload (`thumbnail_key` stays null).
-  - [ ] Primary rules: first file becomes primary; `primary=true` moves the flag (ROADMAP gap 2).
-- [ ] `GET /api/admin/files/{fileId}` streams the file with `Content-Type` and `Content-Disposition` (original name, safely encoded).
-- [ ] `GET /api/admin/files/{fileId}/thumbnail` and `PATCH /api/admin/files/{fileId}/primary` (ROADMAP gaps 1 and 2).
-- [ ] `DELETE /api/admin/files/{fileId}`; deleting the primary promotes another.
-- [ ] Deleting a certificate also deletes its stored files (after the DB transaction commits).
-- [ ] Tests: each allowed type, fake extension rejected, too big rejected, thumbnail created for PDF and image, delete removes from disk (use a temp dir).
+- [x] Migration `V4__certificate_files.sql`.
+- [x] `StorageService` interface + `LocalStorageService` (root from `APP_STORAGE_LOCAL_DIR`, defaults to `./uploads`); keys only, never full paths; reject keys with `..`.
+- [x] Bean selected by `APP_STORAGE_TYPE` (`local` now; `s3` in B7).
+- [x] Upload `POST /api/admin/certificates/{id}/files`:
+  - [x] Check real type by magic bytes (PDF `%PDF`, PNG, JPEG, WEBP `RIFF....WEBP`); reject everything else with 400.
+  - [x] 10 MB limit (`spring.servlet.multipart.max-file-size` / `max-request-size`) → 413 in the standard error format.
+  - [x] Save under `certificates/{certId}/{fileId}.{ext}`.
+  - [x] Thumbnail: PDFBox renders page 1; images are scaled down; save PNG as `certificates/{certId}/{fileId}-thumb.png`. A thumbnail failure doesn't fail the upload (`thumbnail_key` stays null).
+  - [x] Primary rules: first file becomes primary; `primary=true` moves the flag (ROADMAP gap 2).
+- [x] `GET /api/admin/files/{fileId}` streams the file with `Content-Type` and `Content-Disposition` (original name, safely encoded).
+- [x] `GET /api/admin/files/{fileId}/thumbnail` and `PATCH /api/admin/files/{fileId}/primary` (ROADMAP gaps 1 and 2).
+- [x] `DELETE /api/admin/files/{fileId}`; deleting the primary promotes another.
+- [x] Deleting a certificate also deletes its stored files (after the DB transaction commits).
+- [x] Tests: each allowed type, fake extension rejected, too big rejected, thumbnail created for PDF and image, delete removes from disk (use a temp dir).
 
 ## B5 — Public catalog (M5)
 - [ ] `catalog` package with **separate public DTOs** (no `notes`, `expirationDate`, `ownerId`, `isPublic`).

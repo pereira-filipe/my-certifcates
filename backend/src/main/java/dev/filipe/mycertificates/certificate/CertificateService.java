@@ -4,6 +4,7 @@ import dev.filipe.mycertificates.auth.CurrentOwner;
 import dev.filipe.mycertificates.auth.User;
 import dev.filipe.mycertificates.common.FieldValidationException;
 import dev.filipe.mycertificates.common.NotFoundException;
+import dev.filipe.mycertificates.file.FileService;
 import dev.filipe.mycertificates.tag.TagService;
 import java.util.HashSet;
 import java.util.List;
@@ -25,11 +26,14 @@ public class CertificateService {
     private final CertificateRepository certificates;
     private final TagService tagService;
     private final CurrentOwner currentOwner;
+    private final FileService fileService;
 
-    public CertificateService(CertificateRepository certificates, TagService tagService, CurrentOwner currentOwner) {
+    public CertificateService(CertificateRepository certificates, TagService tagService, CurrentOwner currentOwner,
+            FileService fileService) {
         this.certificates = certificates;
         this.tagService = tagService;
         this.currentOwner = currentOwner;
+        this.fileService = fileService;
     }
 
     /** All of the owner's certificates (public and hidden), in display order. Every filter is optional. */
@@ -71,7 +75,9 @@ public class CertificateService {
     }
 
     public void delete(UUID id) {
-        certificates.delete(find(currentOwner.get(), id));
+        Certificate certificate = find(currentOwner.get(), id);
+        fileService.deleteStoredFilesAfterCommit(certificate);
+        certificates.delete(certificate);
     }
 
     public CertificateResponse setVisibility(UUID id, boolean isPublic) {
