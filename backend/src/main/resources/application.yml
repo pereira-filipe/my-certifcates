@@ -1,0 +1,52 @@
+# Every setting can be overridden by an environment variable (see .env.example and specs/BACKEND.md §7).
+# For local runs, values are also read from a .env file in the repo root or the backend folder.
+spring:
+  application:
+    name: my-certificates
+  profiles:
+    default: dev
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mycertificates}
+    username: ${SPRING_DATASOURCE_USERNAME:mycertificates}
+    password: ${SPRING_DATASOURCE_PASSWORD:mycertificates}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate # the schema is owned by Flyway
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+server:
+  servlet:
+    session:
+      timeout: 7d
+      cookie:
+        http-only: true
+        same-site: lax
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+app:
+  owner:
+    email: ${APP_OWNER_EMAIL:}
+    password: ${APP_OWNER_PASSWORD:}
+  storage:
+    type: ${APP_STORAGE_TYPE:local}
+    local-dir: ${APP_STORAGE_LOCAL_DIR:./uploads}
+  base-url: ${APP_BASE_URL:http://localhost:5173}

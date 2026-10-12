@@ -7,7 +7,7 @@ A website to store all my certificates in one place and share them as a clean pu
 
 ## Stack
 
-- **Backend:** Java 21, Spring Boot 3, PostgreSQL 16, Flyway, Maven
+- **Backend:** Java 21, Spring Boot 4, PostgreSQL 16, Flyway, Maven
 - **Frontend:** React + TypeScript, Vite, Tailwind CSS, shadcn/ui
 
 ## Repository layout
@@ -38,4 +38,11 @@ npm install
 npm run dev                       # http://localhost:5173
 ```
 
-More commands in [frontend/README.md](frontend/README.md). Backend run commands will be added when the Spring Boot project is created (B1).
+**Backend** (needs Java 21; Docker for the database):
+
+```bash
+cd backend
+./mvnw spring-boot:run            # http://localhost:8080
+```
+
+More commands in [frontend/README.md](frontend/README.md) and [backend/README.md](backend/README.md).

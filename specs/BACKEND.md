@@ -7,7 +7,7 @@
 | Concern | Choice |
 |---|---|
 | Language | Java 21 (LTS) |
-| Framework | Spring Boot 3 — Spring Web, Spring Data JPA, Spring Security, Bean Validation |
+| Framework | Spring Boot 4 — Spring Web MVC, Spring Data JPA, Spring Security, Bean Validation |
 | Database | PostgreSQL 16 |
 | Migrations | Flyway (all schema changes are versioned SQL files) |
 | Build | Maven |

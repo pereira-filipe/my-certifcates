@@ -3,16 +3,16 @@
 > Implements [specs/BACKEND.md](../specs/BACKEND.md). Milestones are in [ROADMAP.md](ROADMAP.md). Each phase ends with passing tests and a commit.
 
 ## B1 — Project skeleton (M1)
-- [ ] Generate with Spring Initializr: Maven, Java 21, Spring Boot 3, group `dev.filipe` (or similar), artifact `my-certificates`. Dependencies: Web, Data JPA, Security, Validation, Flyway, PostgreSQL, Actuator, Testcontainers.
-- [ ] Add springdoc-openapi, enabled only in the `dev` profile.
-- [ ] `application.yml` reading every setting from env vars ([BACKEND.md §7](../specs/BACKEND.md)), plus `application-dev.yml` and `application-prod.yml`.
-- [ ] Flyway `V1__init.sql` with the extension for UUIDs (`gen_random_uuid()` is built into Postgres 13+).
-- [ ] Global error handler (`@RestControllerAdvice`) producing the one error format: `{status, error, message, fields}`. Covers validation errors, 404, 401/403, 413 (file too big) and unexpected errors (no stack trace in the response).
-- [ ] Base `@MappedSuperclass` with `id`, `createdAt`, `updatedAt` (UTC).
-- [ ] Temporary `GET /api/public/ping` for the M1 check; remove later.
-- [ ] Integration test base class with a shared Testcontainers PostgreSQL.
-- [ ] Keep the Maven wrapper (`./mvnw`) committed — CI runs `./mvnw -B verify`.
-- [ ] Add the `maven` entry (`directory: /backend`) to `.github/dependabot.yml`.
+- [x] Generate with Spring Initializr: Maven, Java 21, Spring Boot 4, group `dev.filipe`, artifact `my-certificates`. Dependencies: Web, Data JPA, Security, Validation, Flyway, PostgreSQL, Actuator, Testcontainers.
+- [x] Add springdoc-openapi, enabled only in the `dev` profile.
+- [x] `application.yml` reading every setting from env vars ([BACKEND.md §7](../specs/BACKEND.md)), plus `application-dev.yml` and `application-prod.yml`.
+- [x] Flyway `V1__init.sql` with the extension for UUIDs (`gen_random_uuid()` is built into Postgres 13+).
+- [x] Global error handler (`@RestControllerAdvice`) producing the one error format: `{status, error, message, fields}`. Covers validation errors, 404, 401/403, 413 (file too big) and unexpected errors (no stack trace in the response).
+- [x] Base `@MappedSuperclass` with `id`, `createdAt`, `updatedAt` (UTC).
+- [x] Temporary `GET /api/public/ping` for the M1 check; remove later.
+- [x] Integration test base class with a shared Testcontainers PostgreSQL.
+- [x] Keep the Maven wrapper (`./mvnw`) committed — CI runs `./mvnw -B verify`.
+- [x] Add the `maven` entry (`directory: /backend`) to `.github/dependabot.yml`.
 
 ## B2 — Authentication (M2)
 - [ ] Migration `V2__users.sql`: `users` table.

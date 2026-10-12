@@ -6,6 +6,7 @@ Each entry: date, which spec file changed, and what/why. Full diffs are in git:
 `git log --follow -p specs/<file>`
 
 ## 2026-10-12
+- `BACKEND.md` §1: Spring Boot 3 → **Spring Boot 4** (4.1 is the current release; 3.x is out of open-source support and no longer offered by Spring Initializr). Found while setting up the backend (B1).
 - `FRONTEND.md` §2, §8: React 18 → **React 19** (current version, what shadcn/ui now targets); Tailwind v4 keeps the theme in `src/index.css` instead of `tailwind.config.ts`. Found while setting up the frontend (F1).
 - Resolved the gaps found while planning ([plans/ROADMAP.md](../plans/ROADMAP.md)):
   - `BACKEND.md` §3: added `GET /api/admin/files/{fileId}/thumbnail` (admin list shows thumbnails of hidden certificates) and `PATCH /api/admin/files/{fileId}/primary` (change the main file).

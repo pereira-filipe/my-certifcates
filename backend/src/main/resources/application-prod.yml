@@ -1,0 +1,7 @@
+server:
+  # Behind the PaaS proxy: trust X-Forwarded-* so redirects and secure cookies use https.
+  forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        secure: true
