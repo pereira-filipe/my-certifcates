@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.filipe.mycertificates.IntegrationTest;
 import jakarta.servlet.http.Cookie;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,9 @@ class AuthIntegrationTest extends IntegrationTest {
     @Autowired
     private UserRepository users;
 
+    /** Before and after: a blocked owner must never leak into another test class. */
     @BeforeEach
+    @AfterEach
     void resetRateLimit() {
         loginAttempts.clear();
     }

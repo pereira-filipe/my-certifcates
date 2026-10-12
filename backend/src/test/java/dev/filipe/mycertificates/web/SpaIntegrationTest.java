@@ -27,14 +27,17 @@ class SpaIntegrationTest extends IntegrationTest {
 
     private static final String TOKEN = "spa-test-token-0123456789abcdef";
 
+    private Runnable restoreToken;
+
     @BeforeEach
     void setUp() {
         deleteCertificatesAndTags();
-        jdbc.update("UPDATE users SET share_token = ? WHERE email = ?", TOKEN, OWNER_EMAIL);
+        restoreToken = useShareToken(TOKEN);
     }
 
     @AfterEach
-    void restoreName() {
+    void restoreOwner() {
+        restoreToken.run();
         jdbc.update("UPDATE users SET display_name = 'owner' WHERE email = ?", OWNER_EMAIL);
     }
 

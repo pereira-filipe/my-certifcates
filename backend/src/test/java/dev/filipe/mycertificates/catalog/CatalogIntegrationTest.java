@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 import javax.imageio.ImageIO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -37,13 +38,20 @@ class CatalogIntegrationTest extends IntegrationTest {
     private String hiddenId;
     private String publicFileId;
     private String hiddenFileId;
+    private Runnable restoreToken;
+
+    /** The regenerate test replaces the token too; either way the original comes back. */
+    @AfterEach
+    void restoreToken() {
+        restoreToken.run();
+    }
 
     @BeforeEach
     void setUp() throws Exception {
         deleteCertificatesAndTags();
-        jdbc.update("UPDATE users SET share_token = 'test-token-0123456789abcdefghij' WHERE email = ?", OWNER_EMAIL);
-        session = loginAsOwner();
         token = "test-token-0123456789abcdefghij";
+        restoreToken = useShareToken(token);
+        session = loginAsOwner();
         hiddenId = create("Hidden one", false);
         publicId = create("Public one", true);
         publicFileId = upload(publicId);

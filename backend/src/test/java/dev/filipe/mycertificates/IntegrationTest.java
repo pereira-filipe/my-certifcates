@@ -71,6 +71,16 @@ public abstract class IntegrationTest {
                 .andReturn().getRequest().getSession(false);
     }
 
+    /**
+     * Gives the owner a known share token for the test and returns a way to put the original back
+     * (other tests check the token the app generated).
+     */
+    protected Runnable useShareToken(String token) {
+        String original = jdbc.queryForObject("SELECT share_token FROM users WHERE email = ?", String.class, OWNER_EMAIL);
+        jdbc.update("UPDATE users SET share_token = ? WHERE email = ?", token, OWNER_EMAIL);
+        return () -> jdbc.update("UPDATE users SET share_token = ? WHERE email = ?", original, OWNER_EMAIL);
+    }
+
     /** Removes certificates and tags (the owner account stays). */
     protected void deleteCertificatesAndTags() {
         jdbc.update("DELETE FROM certificates");
