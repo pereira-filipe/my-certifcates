@@ -8,6 +8,8 @@
 - [ ] Light/dark mode: follow system setting, with a toggle saved in `localStorage`.
 - [ ] React Router with the routes from [FRONTEND.md §3](../specs/FRONTEND.md) as empty placeholder pages.
 - [ ] TanStack Query provider, lucide-react, ESLint + Prettier, Vitest + React Testing Library.
+- [ ] `package.json` scripts used by CI: `lint`, `test` (= `vitest`), `build`; commit `package-lock.json`.
+- [ ] Add the `npm` entry (`directory: /frontend`) to `.github/dependabot.yml`.
 - [ ] `vite.config.ts`: proxy `/api` → `http://localhost:8080`.
 - [ ] `i18n/en.ts` with all UI texts from day one, and a tiny `t()` helper.
 - [ ] `index.html`: `<meta name="robots" content="noindex, nofollow">`, favicon, default title.

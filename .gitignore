@@ -1,0 +1,30 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Uploaded certificate files (never commit them)
+uploads/
+
+# Backend (Maven / Spring Boot)
+backend/target/
+backend/HELP.md
+
+# Frontend (Node / Vite)
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+
+# IDEs and OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db

@@ -33,11 +33,12 @@ my-certifcates/
 | — | Later | B7 | — | S3 storage, expiration reminders, nice-to-haves from [OVERVIEW.md §4](../specs/OVERVIEW.md) |
 
 ### M0 — Repo foundation
-- [ ] Create `backend/`, `frontend/` and root `.gitignore` (`uploads/`, `.env`, `node_modules/`, `dist/`, `target/`, IDE files).
-- [ ] Root `README.md`: what the project is, how to run it locally, link to `specs/` and `plans/`.
-- [ ] `docker-compose.yml` with PostgreSQL 16 (dev only).
-- [ ] GitHub Actions CI: backend `./mvnw verify` (Testcontainers works on GitHub runners) and frontend `npm ci && npm run lint && npm test && npm run build`.
-- [ ] Dependabot for Maven, npm and GitHub Actions ([BACKEND.md §8](../specs/BACKEND.md)).
+- [x] Create `backend/`, `frontend/` and root `.gitignore` (`uploads/`, `.env`, `node_modules/`, `dist/`, `target/`, IDE files).
+- [x] Root `README.md`: what the project is, how to run it locally, link to `specs/` and `plans/`.
+- [x] `docker-compose.yml` with PostgreSQL 16 (dev only), plus `.env.example` listing every env var.
+- [x] GitHub Actions CI: backend `./mvnw verify` (Testcontainers works on GitHub runners) and frontend `npm ci && npm run lint && npm test && npm run build`.
+- [x] Dependabot for GitHub Actions ([BACKEND.md §8](../specs/BACKEND.md)). Maven and npm entries are added in B1 and F1, once those projects exist.
+- [ ] Install the local prerequisites before M1: Java 21, Node.js 22, Docker with Compose.
 
 ## Gaps found in the specs
 

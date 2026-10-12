@@ -1,0 +1,8 @@
+# Maven (/backend) and npm (/frontend) entries are added in B1 and F1,
+# once those projects exist — Dependabot errors on missing manifests.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

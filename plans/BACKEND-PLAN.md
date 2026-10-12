@@ -11,6 +11,8 @@
 - [ ] Base `@MappedSuperclass` with `id`, `createdAt`, `updatedAt` (UTC).
 - [ ] Temporary `GET /api/public/ping` for the M1 check; remove later.
 - [ ] Integration test base class with a shared Testcontainers PostgreSQL.
+- [ ] Keep the Maven wrapper (`./mvnw`) committed — CI runs `./mvnw -B verify`.
+- [ ] Add the `maven` entry (`directory: /backend`) to `.github/dependabot.yml`.
 
 ## B2 — Authentication (M2)
 - [ ] Migration `V2__users.sql`: `users` table.
