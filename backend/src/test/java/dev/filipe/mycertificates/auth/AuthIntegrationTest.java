@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 class AuthIntegrationTest extends IntegrationTest {
 
-    private static final String EMAIL = "owner@example.com";
-    private static final String PASSWORD = "correct-horse-battery";
+    private static final String EMAIL = OWNER_EMAIL;
+    private static final String PASSWORD = OWNER_PASSWORD;
 
     @Autowired
     private LoginAttemptService loginAttempts;

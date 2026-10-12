@@ -21,6 +21,7 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
+        default_batch_fetch_size: 50 # load tags for a whole page of certificates in one query
 
 server:
   servlet:

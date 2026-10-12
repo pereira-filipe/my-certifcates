@@ -12,7 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /** Turns every exception thrown by a controller into an {@link ApiError}. Never exposes stack traces. */
@@ -28,6 +30,21 @@ public class GlobalExceptionHandler {
             fields.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return respond(new ApiError(400, "VALIDATION_ERROR", "Some fields are invalid", fields));
+    }
+
+    @ExceptionHandler(FieldValidationException.class)
+    ResponseEntity<ApiError> handleFieldValidation(FieldValidationException ex) {
+        return respond(new ApiError(400, "VALIDATION_ERROR", "Some fields are invalid", ex.getFields()));
+    }
+
+    /** A malformed id in the URL (e.g. not a UUID) is just an unknown id; a bad query parameter is a 400. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        if (ex.getParameter().hasParameterAnnotation(PathVariable.class)) {
+            return respond(new ApiError(404, "NOT_FOUND", "Not found"));
+        }
+        return respond(new ApiError(400, "VALIDATION_ERROR", "Some fields are invalid",
+                Map.of(ex.getName(), "has an invalid value")));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

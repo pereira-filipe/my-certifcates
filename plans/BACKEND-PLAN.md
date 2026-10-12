@@ -28,18 +28,18 @@
 - [x] Tests: login ok/bad, `/me` before and after, admin endpoint without login → 401, rate limit kicks in, CSRF required on POST.
 
 ## B3 — Certificates, tags and account (M3)
-- [ ] Migration `V3__certificates_tags.sql`: `certificates`, `tags`, `certificate_tags` (unique `(owner_id, name)` on tags).
-- [ ] Entities, repositories, services; every query scoped to the logged-in owner.
-- [ ] Admin DTOs with Bean Validation (title/issuer ≤ 200, required issue date, URL format and ≤ 500 for verification URL, expiration not before issue date).
-- [ ] Endpoints ([BACKEND.md §3](../specs/BACKEND.md)):
-  - [ ] `GET /api/admin/certificates` with `q` (title/issuer, case-insensitive), `tag`, `public`; sorted by `display_order`.
-  - [ ] `POST`, `GET {id}`, `PUT {id}`, `DELETE {id}`.
-  - [ ] `PATCH {id}/visibility`.
-  - [ ] `PUT /order` (ids must be exactly the owner's certificates, otherwise 400).
-  - [ ] Tags: list, create, rename, delete (deleting a tag removes it from certificates).
-  - [ ] Tags on save: the certificate DTO takes tag names; unknown names are created.
-  - [ ] `PUT /api/admin/account` (display name), `PUT /api/admin/account/password` (check current, min 12 chars).
-- [ ] Tests for each endpoint, including validation errors and "other owner's ID → 404" behavior.
+- [x] Migration `V3__certificates_tags.sql`: `certificates`, `tags`, `certificate_tags` (unique `(owner_id, name)` on tags).
+- [x] Entities, repositories, services; every query scoped to the logged-in owner.
+- [x] Admin DTOs with Bean Validation (title/issuer ≤ 200, required issue date, URL format and ≤ 500 for verification URL, expiration not before issue date).
+- [x] Endpoints ([BACKEND.md §3](../specs/BACKEND.md)):
+  - [x] `GET /api/admin/certificates` with `q` (title/issuer, case-insensitive), `tag`, `public`; sorted by `display_order`.
+  - [x] `POST`, `GET {id}`, `PUT {id}`, `DELETE {id}`.
+  - [x] `PATCH {id}/visibility`.
+  - [x] `PUT /order` (ids must be exactly the owner's certificates, otherwise 400).
+  - [x] Tags: list, create, rename, delete (deleting a tag removes it from certificates).
+  - [x] Tags on save: the certificate DTO takes tag names; unknown names are created.
+  - [x] `PUT /api/admin/account` (display name), `PUT /api/admin/account/password` (check current, min 12 chars).
+- [x] Tests for each endpoint, including validation errors and "other owner's ID → 404" behavior.
 
 ## B4 — Files and thumbnails (M4)
 - [ ] Migration `V4__certificate_files.sql`.

@@ -33,7 +33,7 @@ public class AuthController {
 
     public record MeResponse(String email, String displayName) {
 
-        static MeResponse of(User user) {
+        public static MeResponse of(User user) {
             return new MeResponse(user.getEmail(), user.getDisplayName());
         }
     }

@@ -1,10 +1,16 @@
 package dev.filipe.mycertificates;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -23,8 +29,29 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 public abstract class IntegrationTest {
 
+    protected static final String OWNER_EMAIL = "owner@example.com";
+    protected static final String OWNER_PASSWORD = "correct-horse-battery";
+
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected JdbcTemplate jdbc;
+
+    /** Logs in as the test owner and returns the session to pass to later requests. */
+    protected MockHttpSession loginAsOwner() throws Exception {
+        return (MockHttpSession) mockMvc.perform(post("/api/auth/login").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + OWNER_EMAIL + "\",\"password\":\"" + OWNER_PASSWORD + "\"}"))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession(false);
+    }
+
+    /** Removes certificates and tags (the owner account stays). */
+    protected void deleteCertificatesAndTags() {
+        jdbc.update("DELETE FROM certificates");
+        jdbc.update("DELETE FROM tags");
+    }
 
     /**
      * Sends a CSRF token the way the browser does: same value in the XSRF-TOKEN cookie and the X-XSRF-TOKEN header.

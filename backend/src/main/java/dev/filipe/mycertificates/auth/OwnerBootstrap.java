@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class OwnerBootstrap implements ApplicationRunner {
 
-    static final int MIN_PASSWORD_LENGTH = 12;
+    public static final int MIN_PASSWORD_LENGTH = 12;
 
     private static final Logger log = LoggerFactory.getLogger(OwnerBootstrap.class);
 
