@@ -20,7 +20,7 @@ Chosen to be beginner-friendly, very popular (lots of tutorials and help), and a
 | Concern | Choice | Why |
 |---|---|---|
 | Language | **TypeScript** | Like Java, it catches type mistakes before running |
-| UI library | **React 18** | Most used frontend library; huge ecosystem |
+| UI library | **React 19** | Most used frontend library; huge ecosystem |
 | Build tool / dev server | **Vite** | Fast, zero-config setup (`npm create vite@latest`) |
 | Routing | **React Router** | Maps URLs to pages |
 | Styling | **Tailwind CSS** | Style with classes in the markup; no separate CSS files to manage |
@@ -175,7 +175,7 @@ frontend/
     App.tsx         routes
   index.html
   vite.config.ts    (dev proxy for /api)
-  tailwind.config.ts
+  src/index.css     (Tailwind v4 theme: colors, font — no tailwind.config.ts)
 ```
 
 ## 9. Testing

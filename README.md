@@ -30,4 +30,12 @@ cp .env.example .env              # then edit the values
 docker compose up -d              # start PostgreSQL
 ```
 
-Backend and frontend run commands will be added here as those projects are created (milestone M1).
+**Frontend** (needs Node.js 22):
+
+```bash
+cd frontend
+npm install
+npm run dev                       # http://localhost:5173
+```
+
+More commands in [frontend/README.md](frontend/README.md). Backend run commands will be added when the Spring Boot project is created (B1).

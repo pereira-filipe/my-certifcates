@@ -3,23 +3,23 @@
 > Implements [specs/FRONTEND.md](../specs/FRONTEND.md). Milestones are in [ROADMAP.md](ROADMAP.md). Each phase ends with lint + tests passing and a commit.
 
 ## F1 — Project setup (M1)
-- [ ] `npm create vite@latest frontend -- --template react-ts`.
-- [ ] Tailwind CSS + shadcn/ui init (Inter font, neutral greys, calm blue accent defined once in the theme).
-- [ ] Light/dark mode: follow system setting, with a toggle saved in `localStorage`.
-- [ ] React Router with the routes from [FRONTEND.md §3](../specs/FRONTEND.md) as empty placeholder pages.
-- [ ] TanStack Query provider, lucide-react, ESLint + Prettier, Vitest + React Testing Library.
-- [ ] `package.json` scripts used by CI: `lint`, `test` (= `vitest`), `build`; commit `package-lock.json`.
-- [ ] Add the `npm` entry (`directory: /frontend`) to `.github/dependabot.yml`.
-- [ ] `vite.config.ts`: proxy `/api` → `http://localhost:8080`.
-- [ ] `i18n/en.ts` with all UI texts from day one, and a tiny `t()` helper.
-- [ ] `index.html`: `<meta name="robots" content="noindex, nofollow">`, favicon, default title.
+- [x] `npm create vite@latest frontend -- --template react-ts`.
+- [x] Tailwind CSS + shadcn/ui init (Inter font, neutral greys, calm blue accent defined once in the theme).
+- [x] Light/dark mode: follow system setting, with a toggle saved in `localStorage`.
+- [x] React Router with the routes from [FRONTEND.md §3](../specs/FRONTEND.md) as empty placeholder pages.
+- [x] TanStack Query provider, lucide-react, ESLint + Prettier, Vitest + React Testing Library.
+- [x] `package.json` scripts used by CI: `lint`, `test` (= `vitest`), `build`; commit `package-lock.json`.
+- [x] Add the `npm` entry (`directory: /frontend`) to `.github/dependabot.yml`.
+- [x] `vite.config.ts`: proxy `/api` → `http://localhost:8080`.
+- [x] `i18n/en.ts` with all UI texts from day one, and a tiny `t()` helper.
+- [x] `index.html`: `<meta name="robots" content="noindex, nofollow">`, favicon, default title.
 
 ## F2 — API client (M1)
-- [ ] `api/client.ts`: `fetch` wrapper with `credentials: "include"`, JSON handling, CSRF header from the `XSRF-TOKEN` cookie on POST/PUT/PATCH/DELETE.
-- [ ] Turn the backend error format into an `ApiError` with `status`, `error`, `message`, `fields`.
-- [ ] On 401 in the admin area → redirect to `/login?expired=1` (shows "Your session expired…").
-- [ ] Hand-written types in `api/types.ts` matching the backend DTOs.
-- [ ] M1 check: a placeholder page calls `/api/public/ping` and shows the result.
+- [x] `api/client.ts`: `fetch` wrapper with `credentials: "include"`, JSON handling, CSRF header from the `XSRF-TOKEN` cookie on POST/PUT/PATCH/DELETE.
+- [x] Turn the backend error format into an `ApiError` with `status`, `error`, `message`, `fields`.
+- [x] On 401 in the admin area → redirect to `/login?expired=1` (shows "Your session expired…").
+- [x] Hand-written types in `api/types.ts` matching the backend DTOs.
+- [ ] M1 check: a placeholder page calls `/api/public/ping` and shows the result. *(Page at `/` is done; waiting for the backend — B1.)*
 
 ## F3 — Login and route guard (M2)
 - [ ] `useMe()` query on `/api/auth/me`.
