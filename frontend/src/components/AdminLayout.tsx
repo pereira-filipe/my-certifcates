@@ -1,11 +1,11 @@
-import { LogOut } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
 import { Link, Outlet, useNavigate } from 'react-router'
 import { useLogout } from '@/api/auth'
 import { Button } from '@/components/ui/button'
 import { t } from '@/i18n'
 import { ThemeToggle } from './ThemeToggle'
 
-/** Top bar for every admin page. "View public catalog", "Copy link" and Settings come in F4. */
+/** Top bar for every admin page. "View public catalog" and "Copy link" need the share link (M5). */
 export function AdminLayout() {
   const logout = useLogout()
   const navigate = useNavigate()
@@ -19,6 +19,11 @@ export function AdminLayout() {
           </Link>
           <div className="flex items-center gap-1">
             <ThemeToggle />
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/admin/settings" aria-label={t('admin.settings')}>
+                <Settings />
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               disabled={logout.isPending}

@@ -19,6 +19,50 @@ export type LoginRequest = {
   password: string
 }
 
+/** A certificate as the owner sees it (GET /api/admin/certificates). Dates are "YYYY-MM-DD". */
+export type Certificate = {
+  id: string
+  title: string
+  issuer: string
+  issueDate: string
+  expirationDate?: string | null
+  credentialId?: string | null
+  verificationUrl?: string | null
+  notes?: string | null
+  isPublic: boolean
+  displayOrder: number
+  tags: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+/** Body of POST / PUT /api/admin/certificates. Tags are names; new names are created. */
+export type CertificateInput = {
+  title: string
+  issuer: string
+  issueDate: string
+  expirationDate: string | null
+  credentialId: string | null
+  verificationUrl: string | null
+  notes: string | null
+  isPublic: boolean
+  tags: string[]
+}
+
+/** Optional filters for the admin list. */
+export type CertificateFilters = {
+  q?: string
+  tag?: string
+  isPublic?: boolean
+}
+
+/** GET /api/admin/tags */
+export type TagUsage = {
+  id: string
+  name: string
+  certificateCount: number
+}
+
 /** Temporary M1 check: GET /api/public/ping. */
 export type PingResponse = {
   status: string

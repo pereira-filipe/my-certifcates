@@ -45,7 +45,7 @@ The single owner account. There is no public sign-up.
 | expiration_date | date | no | **no** (stored for future reminders) |
 | credential_id | varchar(200) | no | yes |
 | verification_url | varchar(500) | no | yes |
-| notes | text | no | **no** (private to owner) |
+| notes | text (≤ 10,000 chars) | no | **no** (private to owner) |
 | is_public | boolean, default `false` | yes | — |
 | display_order | int | yes | used for sorting; a new certificate goes to the top (current minimum − 1) |
 
@@ -64,7 +64,8 @@ A certificate can have one or more files. One file is the main one, which the ca
 | is_primary | boolean | exactly one per certificate: the first upload becomes primary; deleting the primary promotes the oldest remaining file |
 
 ### `tags` and `certificate_tags`
-- `tags(id, owner_id, name)`: `name` unique per owner (e.g. "Cloud", "Java").
+- `tags(id, owner_id, name)`: `name` (≤ 50 chars) unique per owner **ignoring case** ("Cloud" and "cloud" are the same tag). Extra spaces are trimmed.
+- A certificate has at most 20 tags. `verification_url` must start with `http://` or `https://` (it becomes a link on the public page, so `javascript:` links are refused).
 - `certificate_tags(certificate_id, tag_id)`: many-to-many.
 
 ## 3. API
@@ -94,7 +95,10 @@ REST + JSON, base path `/api`. Errors use one format:
 | GET | `/api/admin/files/{fileId}/thumbnail` | thumbnail of any file (public or hidden certificate) |
 | PATCH | `/api/admin/files/{fileId}/primary` | make this file the main one |
 | DELETE | `/api/admin/files/{fileId}` | delete a file |
-| GET / POST / DELETE | `/api/admin/tags` … | manage tags |
+| GET | `/api/admin/tags` | all tags with `certificateCount`, sorted by name |
+| POST | `/api/admin/tags` | `{ name }` → create (400 if the name exists) |
+| PUT | `/api/admin/tags/{id}` | `{ name }` → rename |
+| DELETE | `/api/admin/tags/{id}` | delete; it's removed from every certificate |
 | PUT | `/api/admin/account` | update display name |
 | PUT | `/api/admin/account/password` | `{ currentPassword, newPassword }` |
 | GET | `/api/admin/catalog` | current share link |

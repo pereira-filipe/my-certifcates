@@ -6,6 +6,7 @@ Each entry: date, which spec file changed, and what/why. Full diffs are in git:
 `git log --follow -p specs/<file>`
 
 ## 2026-10-12
+- `BACKEND.md` §2–3: details settled while building certificate management (B3): tag names ≤ 50 chars and unique ignoring case, at most 20 tags per certificate, notes ≤ 10,000 chars, `verification_url` must be http(s); tag endpoints spelled out, including `PUT /api/admin/tags/{id}` to rename (Settings needs it).
 - `BACKEND.md` §5: details settled while building login (B2): bootstrap rules (prod refuses to start without owner vars, dev warns; display name from the email), session cookie lasts 7 days, sessions are in memory (restart logs out), CSRF via `csrf.spa()`, error codes for the auth endpoints, `/api/auth/me` requires login.
 - `BACKEND.md` §1: Spring Boot 3 → **Spring Boot 4** (4.1 is the current release; 3.x is out of open-source support and no longer offered by Spring Initializr). Found while setting up the backend (B1).
 - `FRONTEND.md` §2, §8: React 18 → **React 19** (current version, what shadcn/ui now targets); Tailwind v4 keeps the theme in `src/index.css` instead of `tailwind.config.ts`. Found while setting up the frontend (F1).
