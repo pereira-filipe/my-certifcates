@@ -18,6 +18,10 @@ export default defineConfig({
       '/api': 'http://localhost:8080',
     },
   },
+  build: {
+    // pdf.js (the PDF viewer) is ~630 kB on its own, but it's loaded only when a visitor opens a PDF.
+    chunkSizeWarningLimit: 700,
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

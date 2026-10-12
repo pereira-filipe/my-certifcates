@@ -28,7 +28,7 @@ my-certifcates/
 | M2 ✅ | Login works | B2 | F3 | I can log in, reload and stay logged in, and log out; `/admin` redirects when logged out |
 | M3 ✅ | Manage certificates (no files) | B3 | F4, F5 (without files) | Add, edit, delete, tag, reorder and hide/show certificates |
 | M4 ✅ | Files | B4 | F5 (files) | Upload PDF/image, see thumbnail and preview, download, delete |
-| M5 | Public catalog | B5 | F6, F7 | A recruiter can open my link on a phone and browse public certificates only |
+| M5 ✅ | Public catalog | B5 | F6, F7 | A recruiter can open my link on a phone and browse public certificates only |
 | M6 | Ship it | B6 | F8 | Running on the PaaS with HTTPS, persistent uploads volume, backups; E2E tests green |
 | — | Later | B7 | — | S3 storage, expiration reminders, nice-to-haves from [OVERVIEW.md §4](../specs/OVERVIEW.md) |
 

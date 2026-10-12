@@ -29,7 +29,7 @@
 
 ## F4 — Admin certificate list (M3)
 - [x] Top bar: app name, Settings, Log out.
-- [ ] Top bar: "View public catalog" and "Copy link" — need the share link from B5, so built in M5.
+- [x] Top bar: "View public catalog" and "Copy link" (built in M5, once the share link existed).
 - [x] List with skeleton loading and the empty state "No certificates yet" + "Add your first certificate".
 - [x] Search box (debounced) and filters (tag, Public/Hidden) sent as `q`, `tag`, `public` query params.
 - [x] Row/card: thumbnail of the main file, title, issuer, issue date ("Mar 2025"), expiration badge ("Expires Jun 2027" / "Expired"), Public/Hidden switch (optimistic update), edit, delete (confirm dialog).
@@ -48,19 +48,19 @@
   - [x] File list with preview, "Main" marker (set main), delete with confirm.
 
 ## F6 — Settings (M5)
-- [ ] Share link: full link + Copy; "Generate new link" with the warning "The old link will stop working — update your CV."
-- [ ] Profile: display name.
-- [ ] Password: current, new, confirm (min 12, must match).
-- [ ] Tags: rename and delete.
+- [x] Share link: full link + Copy; "Generate new link" with the warning "The old link will stop working — update your CV."
+- [x] Profile: display name.
+- [x] Password: current, new, confirm (min 12, must match).
+- [x] Tags: rename and delete.
 
 ## F7 — Public catalog (M5)
-- [ ] `/c/:shareToken`: header with display name + "Certifications"; responsive grid (1 / 2 / 3–4 columns); card with lazy-loaded thumbnail (alt = title), title, issuer, date, tag badges; skeleton loading; empty state "No certificates to show yet."
-- [ ] Detail as a modal over the catalog **and** as its own route `/c/:shareToken/:certificateId` (direct links work; closing goes back without reloading the grid).
-- [ ] Detail content: image shown directly; PDF via `react-pdf` with previous/next page; credential ID with copy button; "Verify credential" (only when there's a URL, opens in new tab with `rel="noopener noreferrer"`); Download button.
-- [ ] Not found page for bad token / unknown certificate.
-- [ ] Never render expiration date or notes (the public types don't even have those fields).
-- [ ] Check on a 360 px wide screen: no horizontal scroll.
-- [ ] Lazy-load the admin routes (React Router `lazy`) so the public catalog doesn't download the admin code — the single bundle is already over 500 kB after F3.
+- [x] `/c/:shareToken`: header with display name + "Certifications"; responsive grid (1 / 2 / 3–4 columns); card with lazy-loaded thumbnail (alt = title), title, issuer, date, tag badges; skeleton loading; empty state "No certificates to show yet."
+- [x] Detail as a modal over the catalog **and** as its own route `/c/:shareToken/:certificateId` (direct links work; closing goes back without reloading the grid).
+- [x] Detail content: image shown directly; PDF via `react-pdf` with previous/next page; credential ID with copy button; "Verify credential" (only when there's a URL, opens in new tab with `rel="noopener noreferrer"`); Download button.
+- [x] Not found page for bad token / unknown certificate.
+- [x] Never render expiration date or notes (the public types don't even have those fields).
+- [x] Check on a 360 px wide screen: no horizontal scroll.
+- [x] Lazy-load the admin routes (React Router `lazy`) so the public catalog doesn't download the admin code — the single bundle is already over 500 kB after F3.
 
 ## F8 — Testing and polish (M6)
 - [ ] Component tests: form validation, dropzone type/size checks, `CertificateCard`.

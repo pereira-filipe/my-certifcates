@@ -76,7 +76,35 @@ export type TagUsage = {
   certificateCount: number
 }
 
-/** Temporary M1 check: GET /api/public/ping. */
-export type PingResponse = {
-  status: string
+/** GET /api/admin/catalog: the owner's share link. */
+export type CatalogLink = {
+  shareToken: string
+  url: string
+}
+
+/** What visitors see (GET /api/public/catalogs/{token}). No notes or expiration date, on purpose. */
+export type PublicCatalog = {
+  displayName: string
+  certificates: PublicCertificate[]
+}
+
+export type PublicCertificate = {
+  id: string
+  title: string
+  issuer: string
+  issueDate: string
+  credentialId?: string | null
+  verificationUrl?: string | null
+  tags: string[]
+  /** Main file first. */
+  files: PublicFile[]
+}
+
+export type PublicFile = {
+  id: string
+  originalName: string
+  contentType: string
+  sizeBytes: number
+  isPrimary: boolean
+  hasThumbnail: boolean
 }

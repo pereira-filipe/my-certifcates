@@ -1,32 +1,52 @@
-import { createBrowserRouter, RouterProvider } from 'react-router'
-import { AdminLayout } from '@/components/AdminLayout'
-import { RequireAuth } from '@/components/RequireAuth'
-import { CertificateFormPage } from '@/pages/admin/CertificateFormPage'
-import { CertificateListPage } from '@/pages/admin/CertificateListPage'
-import { LoginPage } from '@/pages/admin/LoginPage'
-import { SettingsPage } from '@/pages/admin/SettingsPage'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { CatalogPage } from '@/pages/public/CatalogPage'
 import { CertificateDetailPage } from '@/pages/public/CertificateDetailPage'
-import { HomePage } from '@/pages/public/HomePage'
 import { NotFoundPage } from '@/pages/public/NotFoundPage'
 
-// Routes from specs/FRONTEND.md §3.
+// Routes from specs/FRONTEND.md §3. Admin pages are loaded on demand, so visitors of the public catalog
+// never download them.
 const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> }, // temporary M1 check page
-  { path: '/c/:shareToken', element: <CatalogPage /> },
-  { path: '/c/:shareToken/:certificateId', element: <CertificateDetailPage /> },
-  { path: '/login', element: <LoginPage /> },
+  { path: '/', element: <Navigate to="/admin" replace /> },
+  {
+    path: '/c/:shareToken',
+    element: <CatalogPage />,
+    children: [{ path: ':certificateId', element: <CertificateDetailPage /> }],
+  },
+  {
+    path: '/login',
+    lazy: async () => ({ Component: (await import('@/pages/admin/LoginPage')).LoginPage }),
+  },
   {
     path: '/admin',
-    element: <RequireAuth />,
+    lazy: async () => ({ Component: (await import('@/components/RequireAuth')).RequireAuth }),
     children: [
       {
-        element: <AdminLayout />,
+        lazy: async () => ({ Component: (await import('@/components/AdminLayout')).AdminLayout }),
         children: [
-          { index: true, element: <CertificateListPage /> },
-          { path: 'certificates/new', element: <CertificateFormPage /> },
-          { path: 'certificates/:id', element: <CertificateFormPage /> },
-          { path: 'settings', element: <SettingsPage /> },
+          {
+            index: true,
+            lazy: async () => ({
+              Component: (await import('@/pages/admin/CertificateListPage')).CertificateListPage,
+            }),
+          },
+          {
+            path: 'certificates/new',
+            lazy: async () => ({
+              Component: (await import('@/pages/admin/CertificateFormPage')).CertificateFormPage,
+            }),
+          },
+          {
+            path: 'certificates/:id',
+            lazy: async () => ({
+              Component: (await import('@/pages/admin/CertificateFormPage')).CertificateFormPage,
+            }),
+          },
+          {
+            path: 'settings',
+            lazy: async () => ({
+              Component: (await import('@/pages/admin/SettingsPage')).SettingsPage,
+            }),
+          },
         ],
       },
     ],

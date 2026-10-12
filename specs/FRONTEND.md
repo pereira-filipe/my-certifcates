@@ -40,7 +40,8 @@ Chosen to be beginner-friendly, very popular (lots of tutorials and help), and a
 |---|---|
 | `/c/:shareToken` | **Catalog**: the page recruiters open |
 | `/c/:shareToken/:certificateId` | **Certificate detail** (also opens as a modal over the catalog) |
-| anything else / bad token | **Not found** page |
+| `/` | redirects to `/admin` (which asks for login if needed) |
+| anything else / bad token | **Not found** page (an unknown certificate under a valid link shows "not found" inside the dialog) |
 
 **Catalog page**
 - Header: my display name and a short line like "Certifications".
@@ -54,7 +55,8 @@ Chosen to be beginner-friendly, very popular (lots of tutorials and help), and a
 - Clicking a card opens the detail.
 
 **Certificate detail**
-- Large preview: images shown directly, PDFs shown with an inline viewer (page 1, with next/previous for multi-page).
+- Large preview: images shown directly, PDFs shown with an inline viewer (page 1, with next/previous for multi-page). The PDF viewer is loaded only when a PDF is opened, so the catalog itself stays light.
+- Card thumbnails show the whole certificate (not cropped), since most certificates are landscape.
 - Fields: title, issuer, issue date, credential ID (with a copy button), tags.
 - **"Verify credential"** button that opens `verification_url` in a new tab (only shown when there is one).
 - "Download" button for the file.
