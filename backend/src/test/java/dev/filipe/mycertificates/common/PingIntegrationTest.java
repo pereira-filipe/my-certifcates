@@ -26,6 +26,6 @@ class PingIntegrationTest extends IntegrationTest {
 
     @Test
     void adminPathsAreClosed() throws Exception {
-        mockMvc.perform(get("/api/admin/certificates")).andExpect(status().is4xxClientError());
+        mockMvc.perform(get("/api/admin/certificates")).andExpect(status().isUnauthorized());
     }
 }

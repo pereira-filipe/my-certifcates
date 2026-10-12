@@ -29,6 +29,7 @@ server:
       cookie:
         http-only: true
         same-site: lax
+        max-age: 7d # keep the login when the browser restarts (matches the session timeout)
 
 springdoc:
   api-docs:

@@ -34,6 +34,17 @@ function isApiErrorBody(value: unknown): value is ApiErrorBody {
   )
 }
 
+/**
+ * Spring Security hands out the XSRF-TOKEN cookie on any response. If the first call of a visit is a
+ * POST (e.g. the login form), fetch something cheap first so the cookie exists.
+ */
+async function ensureCsrfCookie(): Promise<string | undefined> {
+  const existing = readCookie(CSRF_COOKIE)
+  if (existing) return existing
+  await fetch('/api/auth/me', { credentials: 'include' }).catch(() => undefined)
+  return readCookie(CSRF_COOKIE)
+}
+
 /** In the admin area a 401 means the session expired: go to the login page and come back after. */
 function redirectToLoginIfAdmin() {
   const { pathname, search } = window.location
@@ -42,14 +53,18 @@ function redirectToLoginIfAdmin() {
   window.location.assign(`/login?expired=1&next=${next}`)
 }
 
-export type RequestOptions = Omit<RequestInit, 'body'> & { body?: unknown }
+export type RequestOptions = Omit<RequestInit, 'body'> & {
+  body?: unknown
+  /** Set to false when a 401 is an expected answer (e.g. "am I logged in?"). Default true. */
+  redirectOn401?: boolean
+}
 
 /**
  * Calls the backend at `/api/...` with the session cookie and CSRF token,
  * and turns the backend's error format into an {@link ApiError}.
  */
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { body, headers: extraHeaders, ...init } = options
+  const { body, headers: extraHeaders, redirectOn401 = true, ...init } = options
   const method = (init.method ?? 'GET').toUpperCase()
   const headers = new Headers(extraHeaders)
   headers.set('Accept', 'application/json')
@@ -63,7 +78,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   }
 
   if (UNSAFE_METHODS.has(method)) {
-    const token = readCookie(CSRF_COOKIE)
+    const token = await ensureCsrfCookie()
     if (token) headers.set(CSRF_HEADER, token)
   }
 
@@ -80,7 +95,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     throw new ApiError({ status: 0, error: 'NETWORK_ERROR', message: 'Network error' })
   }
 
-  if (response.status === 401) redirectToLoginIfAdmin()
+  if (response.status === 401 && redirectOn401) redirectToLoginIfAdmin()
 
   if (!response.ok) {
     const data: unknown = await response.json().catch(() => undefined)

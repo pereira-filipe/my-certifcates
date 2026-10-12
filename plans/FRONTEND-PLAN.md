@@ -22,10 +22,10 @@
 - [x] M1 check: a placeholder page calls `/api/public/ping` and shows the result. Verified 2026-10-12 in headless Chromium through the Vite proxy.
 
 ## F3 — Login and route guard (M2)
-- [ ] `useMe()` query on `/api/auth/me`.
-- [ ] `RequireAuth` wrapper for `/admin/*`: while loading show a skeleton; when logged out redirect to `/login?next=<path>`.
-- [ ] Login page: email + password (React Hook Form + Zod), generic "Invalid email or password", special message on 429 (blocked).
-- [ ] Log out button in the admin top bar.
+- [x] `useMe()` query on `/api/auth/me`.
+- [x] `RequireAuth` wrapper for `/admin/*`: while loading show a skeleton; when logged out redirect to `/login?next=<path>`.
+- [x] Login page: email + password (React Hook Form + Zod), generic "Invalid email or password", special message on 429 (blocked).
+- [x] Log out button in the admin top bar.
 
 ## F4 — Admin certificate list (M3)
 - [ ] Top bar: app name, "View public catalog", "Copy link", Settings, Log out.
@@ -59,6 +59,7 @@
 - [ ] Not found page for bad token / unknown certificate.
 - [ ] Never render expiration date or notes (the public types don't even have those fields).
 - [ ] Check on a 360 px wide screen: no horizontal scroll.
+- [ ] Lazy-load the admin routes (React Router `lazy`) so the public catalog doesn't download the admin code — the single bundle is already over 500 kB after F3.
 
 ## F8 — Testing and polish (M6)
 - [ ] Component tests: form validation, dropzone type/size checks, `CertificateCard`.

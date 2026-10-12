@@ -141,12 +141,13 @@ Rules:
 ## 5. Authentication
 
 - **Email + password** for the single owner. No sign-up endpoint.
-- The owner account is created on first startup from env vars `APP_OWNER_EMAIL` / `APP_OWNER_PASSWORD` if no user exists yet. The password can be changed later in Settings (`PUT /api/admin/account/password`, minimum 12 characters).
+- The owner account is created on first startup from env vars `APP_OWNER_EMAIL` / `APP_OWNER_PASSWORD` if no user exists yet (password minimum 12 characters; the display name starts as the part of the email before `@`). In `prod` the app refuses to start without them; in `dev` it only logs a warning. Once the owner exists these vars are ignored. The password can be changed later in Settings (`PUT /api/admin/account/password`, minimum 12 characters).
 - Passwords hashed with **BCrypt**.
-- **Session-based auth** (Spring Security): `HttpOnly`, `Secure`, `SameSite=Lax` session cookie, CSRF protection on, session timeout 7 days.
-- **CSRF for the SPA:** `CookieCsrfTokenRepository.withHttpOnlyFalse()` sets an `XSRF-TOKEN` cookie; the frontend sends it back in the `X-XSRF-TOKEN` header on POST/PUT/PATCH/DELETE (Spring Security 6 SPA setup).
+- **Session-based auth** (Spring Security): `HttpOnly`, `Secure` (prod), `SameSite=Lax` session cookie that lasts 7 days (so the login survives a browser restart), CSRF protection on, session timeout 7 days. The session id changes on login. Sessions live in the app's memory, so a restart or redeploy logs the owner out.
+- **CSRF for the SPA:** Spring Security's `csrf.spa()` sets an `XSRF-TOKEN` cookie (readable by JavaScript) on every response; the frontend sends it back in the `X-XSRF-TOKEN` header on POST/PUT/PATCH/DELETE, including login and logout.
 - **Login rate limit:** after 5 failed attempts, block that IP/email for 15 minutes and return `429`. Counters are kept in memory: fine for a single app instance, but they reset on restart and would need shared storage if the app ever runs on several instances.
-- `/api/admin/**` requires login; `/api/public/**` and `/api/auth/login` are open.
+- `/api/admin/**` and `/api/auth/me` require login; `/api/public/**` and `/api/auth/login` are open.
+- **Auth endpoints:** login returns the owner (`{ email, displayName }`) or `401 INVALID_CREDENTIALS` (same message for unknown email and wrong password) or `429 LOGIN_BLOCKED` with `Retry-After`. Logout returns `204`. Missing login → `401 UNAUTHORIZED`; missing/invalid CSRF token → `403 CSRF_TOKEN_INVALID`.
 
 ## 6. Background jobs & notifications
 

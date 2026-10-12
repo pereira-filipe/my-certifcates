@@ -25,7 +25,7 @@ my-certifcates/
 |---|---|---|---|---|
 | M0 ✅ | Repo foundation | — | — | Folder layout, `.gitignore`, README, CI running |
 | M1 ✅ | Skeletons talk to each other | B1 | F1, F2 | `npm run dev` page shows data from Spring Boot through the Vite proxy |
-| M2 | Login works | B2 | F3 | I can log in, reload and stay logged in, and log out; `/admin` redirects when logged out |
+| M2 ✅ | Login works | B2 | F3 | I can log in, reload and stay logged in, and log out; `/admin` redirects when logged out |
 | M3 | Manage certificates (no files) | B3 | F4, F5 (without files) | Add, edit, delete, tag, reorder and hide/show certificates |
 | M4 | Files | B4 | F5 (files) | Upload PDF/image, see thumbnail and preview, download, delete |
 | M5 | Public catalog | B5 | F6, F7 | A recruiter can open my link on a phone and browse public certificates only |

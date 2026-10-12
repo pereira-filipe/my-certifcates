@@ -15,17 +15,17 @@
 - [x] Add the `maven` entry (`directory: /backend`) to `.github/dependabot.yml`.
 
 ## B2 — Authentication (M2)
-- [ ] Migration `V2__users.sql`: `users` table.
-- [ ] `User` entity + repository.
-- [ ] Owner bootstrap: on startup, if no user exists, create one from `APP_OWNER_EMAIL` / `APP_OWNER_PASSWORD` (BCrypt) with a random `share_token` (32 chars, `SecureRandom`). Fail startup in `prod` if the vars are missing.
-- [ ] Security config:
+- [x] Migration `V2__users.sql`: `users` table.
+- [x] `User` entity + repository.
+- [x] Owner bootstrap: on startup, if no user exists, create one from `APP_OWNER_EMAIL` / `APP_OWNER_PASSWORD` (BCrypt) with a random `share_token` (32 chars, `SecureRandom`). Fail startup in `prod` if the vars are missing.
+- [x] Security config:
   - Session cookie: `HttpOnly`, `Secure` (prod), `SameSite=Lax`, 7-day timeout.
-  - CSRF via `CookieCsrfTokenRepository.withHttpOnlyFalse()` + SPA handler (see ROADMAP gap 6).
+  - CSRF via `csrf.spa()` (Spring Security 7; sends the cookie on every response, no extra filter needed).
   - `/api/admin/**` authenticated, `/api/public/**` and `/api/auth/login` open, static frontend files open.
-  - Return 401 JSON (not a redirect or login page) for unauthenticated API calls. *(B1's minimal config returns 403 for now.)*
-- [ ] `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`.
-- [ ] Login rate limit: in-memory counter by IP and by email; 5 failures → blocked for 15 minutes → `429` with a clear error code the frontend can show.
-- [ ] Tests: login ok/bad, `/me` before and after, admin endpoint without login → 401, rate limit kicks in, CSRF required on POST.
+  - Return 401 JSON (not a redirect or login page) for unauthenticated API calls.
+- [x] `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`.
+- [x] Login rate limit: in-memory counter by IP and by email; 5 failures → blocked for 15 minutes → `429` with a clear error code the frontend can show.
+- [x] Tests: login ok/bad, `/me` before and after, admin endpoint without login → 401, rate limit kicks in, CSRF required on POST.
 
 ## B3 — Certificates, tags and account (M3)
 - [ ] Migration `V3__certificates_tags.sql`: `certificates`, `tags`, `certificate_tags` (unique `(owner_id, name)` on tags).

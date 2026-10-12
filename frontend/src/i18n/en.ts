@@ -21,6 +21,23 @@ export const en = {
     network: "Can't reach the server. Check your connection and try again.",
   },
   placeholder: 'Coming soon',
+  login: {
+    title: 'Log in',
+    description: 'Manage your certificates.',
+    email: 'Email',
+    password: 'Password',
+    submit: 'Log in',
+    submitting: 'Logging in…',
+    invalid: 'Invalid email or password',
+    blocked: 'Too many failed attempts. Try again in a few minutes.',
+    expired: 'Your session expired, please log in again.',
+    emailRequired: 'Enter your email',
+    emailInvalid: 'Enter a valid email',
+    passwordRequired: 'Enter your password',
+  },
+  admin: {
+    logout: 'Log out',
+  },
 }
 
 export type Messages = typeof en

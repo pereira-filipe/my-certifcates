@@ -8,6 +8,17 @@ export type ApiErrorBody = {
   fields?: Record<string, string>
 }
 
+/** GET /api/auth/me and POST /api/auth/login. */
+export type Me = {
+  email: string
+  displayName: string
+}
+
+export type LoginRequest = {
+  email: string
+  password: string
+}
+
 /** Temporary M1 check: GET /api/public/ping. */
 export type PingResponse = {
   status: string

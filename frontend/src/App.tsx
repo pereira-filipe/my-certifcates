@@ -1,4 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
+import { AdminLayout } from '@/components/AdminLayout'
+import { RequireAuth } from '@/components/RequireAuth'
 import { CertificateFormPage } from '@/pages/admin/CertificateFormPage'
 import { CertificateListPage } from '@/pages/admin/CertificateListPage'
 import { LoginPage } from '@/pages/admin/LoginPage'
@@ -14,10 +16,21 @@ const router = createBrowserRouter([
   { path: '/c/:shareToken', element: <CatalogPage /> },
   { path: '/c/:shareToken/:certificateId', element: <CertificateDetailPage /> },
   { path: '/login', element: <LoginPage /> },
-  { path: '/admin', element: <CertificateListPage /> },
-  { path: '/admin/certificates/new', element: <CertificateFormPage /> },
-  { path: '/admin/certificates/:id', element: <CertificateFormPage /> },
-  { path: '/admin/settings', element: <SettingsPage /> },
+  {
+    path: '/admin',
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <CertificateListPage /> },
+          { path: 'certificates/new', element: <CertificateFormPage /> },
+          { path: 'certificates/:id', element: <CertificateFormPage /> },
+          { path: 'settings', element: <SettingsPage /> },
+        ],
+      },
+    ],
+  },
   { path: '*', element: <NotFoundPage /> },
 ])
 
