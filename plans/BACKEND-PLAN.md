@@ -50,7 +50,7 @@
   - [ ] Thumbnail: PDFBox renders page 1; images are scaled down; save PNG as `certificates/{certId}/{fileId}-thumb.png`. A thumbnail failure doesn't fail the upload (`thumbnail_key` stays null).
   - [ ] Primary rules: first file becomes primary; `primary=true` moves the flag (ROADMAP gap 2).
 - [ ] `GET /api/admin/files/{fileId}` streams the file with `Content-Type` and `Content-Disposition` (original name, safely encoded).
-- [ ] `GET /api/admin/files/{fileId}/thumbnail` and `PATCH /api/admin/files/{fileId}/primary` (ROADMAP gaps 1 and 2 — add to spec first).
+- [ ] `GET /api/admin/files/{fileId}/thumbnail` and `PATCH /api/admin/files/{fileId}/primary` (ROADMAP gaps 1 and 2).
 - [ ] `DELETE /api/admin/files/{fileId}`; deleting the primary promotes another.
 - [ ] Deleting a certificate also deletes its stored files (after the DB transaction commits).
 - [ ] Tests: each allowed type, fake extension rejected, too big rejected, thumbnail created for PDF and image, delete removes from disk (use a temp dir).

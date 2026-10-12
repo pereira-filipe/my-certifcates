@@ -47,7 +47,7 @@ The single owner account. There is no public sign-up.
 | verification_url | varchar(500) | no | yes |
 | notes | text | no | **no** (private to owner) |
 | is_public | boolean, default `false` | yes | — |
-| display_order | int | yes | used for sorting |
+| display_order | int | yes | used for sorting; a new certificate goes to the top (current minimum − 1) |
 
 ### `certificate_files`
 A certificate can have one or more files. One file is the main one, which the catalog card uses for its thumbnail.
@@ -61,7 +61,7 @@ A certificate can have one or more files. One file is the main one, which the ca
 | original_name | varchar | as uploaded |
 | content_type | varchar | `application/pdf`, `image/png`, `image/jpeg`, `image/webp` |
 | size_bytes | bigint | |
-| is_primary | boolean | exactly one per certificate |
+| is_primary | boolean | exactly one per certificate: the first upload becomes primary; deleting the primary promotes the oldest remaining file |
 
 ### `tags` and `certificate_tags`
 - `tags(id, owner_id, name)`: `name` unique per owner (e.g. "Cloud", "Java").
@@ -91,6 +91,8 @@ REST + JSON, base path `/api`. Errors use one format:
 | PUT | `/api/admin/certificates/order` | `[id1, id2, …]` → reorder |
 | POST | `/api/admin/certificates/{id}/files` | multipart upload (`file`, `primary=true/false`) |
 | GET | `/api/admin/files/{fileId}` | download/view any file |
+| GET | `/api/admin/files/{fileId}/thumbnail` | thumbnail of any file (public or hidden certificate) |
+| PATCH | `/api/admin/files/{fileId}/primary` | make this file the main one |
 | DELETE | `/api/admin/files/{fileId}` | delete a file |
 | GET / POST / DELETE | `/api/admin/tags` … | manage tags |
 | PUT | `/api/admin/account` | update display name |
@@ -142,7 +144,8 @@ Rules:
 - The owner account is created on first startup from env vars `APP_OWNER_EMAIL` / `APP_OWNER_PASSWORD` if no user exists yet. The password can be changed later in Settings (`PUT /api/admin/account/password`, minimum 12 characters).
 - Passwords hashed with **BCrypt**.
 - **Session-based auth** (Spring Security): `HttpOnly`, `Secure`, `SameSite=Lax` session cookie, CSRF protection on, session timeout 7 days.
-- **Login rate limit:** after 5 failed attempts, block that IP/email for 15 minutes.
+- **CSRF for the SPA:** `CookieCsrfTokenRepository.withHttpOnlyFalse()` sets an `XSRF-TOKEN` cookie; the frontend sends it back in the `X-XSRF-TOKEN` header on POST/PUT/PATCH/DELETE (Spring Security 6 SPA setup).
+- **Login rate limit:** after 5 failed attempts, block that IP/email for 15 minutes and return `429`. Counters are kept in memory: fine for a single app instance, but they reset on restart and would need shared storage if the app ever runs on several instances.
 - `/api/admin/**` requires login; `/api/public/**` and `/api/auth/login` are open.
 
 ## 6. Background jobs & notifications
@@ -157,6 +160,7 @@ Rules:
 - ⚠️ **Disk on PaaS is usually wiped on every deploy/restart.** While storage is still local (phase 1), production needs a **persistent volume** mounted at `APP_STORAGE_LOCAL_DIR` (Railway volumes, Fly volumes, or a Render persistent disk). The alternative is to switch to S3 before the first production deploy.
 - HTTPS is provided by the PaaS.
 - **Frontend served by the backend:** the React build is copied into the Spring Boot app's static resources in the same Docker image, so frontend and API share one domain (no CORS or cross-site cookie issues). Non-`/api` paths that aren't files return `index.html` (SPA fallback). See [FRONTEND.md §7](FRONTEND.md).
+- **Link previews:** for `/c/{shareToken}` the backend serves `index.html` with the owner's display name put into `<title>` and the Open Graph tags (plain string replace), because LinkedIn/WhatsApp don't run JavaScript. An unknown token gets generic tags.
 - In dev, Vite proxies `/api` to Spring Boot, so CORS is not needed either.
 
 ### Environment variables

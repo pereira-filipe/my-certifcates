@@ -100,7 +100,9 @@ Any `/admin/*` route without a session redirects to `/login`, then back to the p
 - File upload area:
   - Drag-and-drop or click to choose. Several files are allowed, and one is marked "Main".
   - States the limits up front: "PDF, PNG, JPG or WEBP · max 10 MB".
-  - Shows upload progress and a preview after upload.
+  - Shows upload progress (the upload call uses `XMLHttpRequest`, since `fetch` can't report upload progress) and a preview after upload.
+  - Any file can be set as "Main" later.
+  - When adding a new certificate, chosen files wait in the browser; on Save the certificate is created first, then the files are uploaded. If an upload fails, the certificate stays saved and the page switches to Edit with the error shown.
   - Wrong type or too big → error shown before uploading.
 - "Save" and "Cancel". Leaving with unsaved changes asks for confirmation.
 - Field errors from the backend appear under the matching field.
@@ -132,7 +134,7 @@ Any `/admin/*` route without a session redirects to `/login`, then back to the p
 - **Typography:** one modern sans-serif font (Inter), clear hierarchy (title > issuer > date).
 - **Light and dark mode:** follows the visitor's system setting, with a manual toggle.
 - **Favicon + page title:** e.g. "Filipe — Certifications".
-- **Link preview:** when the link is pasted in LinkedIn/WhatsApp it shows a title and description (Open Graph tags).
+- **Link preview:** when the link is pasted in LinkedIn/WhatsApp it shows a title and description (Open Graph tags). These are filled in by the backend, see [BACKEND.md §7](BACKEND.md).
 
 ## 6. Responsiveness, accessibility, language
 
@@ -149,7 +151,7 @@ Any `/admin/*` route without a session redirects to `/login`, then back to the p
 ## 7. Talking to the backend
 
 - All calls go to `/api/...` (see [BACKEND.md §3](BACKEND.md)), through one small API client that:
-  - Sends cookies (`credentials: "include"`) and the CSRF token on POST/PUT/PATCH/DELETE.
+  - Sends cookies (`credentials: "include"`) and the CSRF token (from the `XSRF-TOKEN` cookie, in the `X-XSRF-TOKEN` header) on POST/PUT/PATCH/DELETE.
   - Turns the backend's error format into field errors and toasts.
   - Redirects to `/login` on 401 in the admin area.
 - TypeScript types for API responses are written by hand to match the backend DTOs. They can be generated from the OpenAPI spec later.
